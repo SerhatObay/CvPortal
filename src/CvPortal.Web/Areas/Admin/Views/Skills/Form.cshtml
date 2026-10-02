@@ -1,0 +1,63 @@
+@model SkillDto
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "Yeni Yetenek" : "Yeteneği Düzenle";
+    ViewData["Subtitle"] = isNew ? "Teknik veya kişisel bir yetkinlik ekleyin" : Model.Name;
+}
+
+<form asp-action="@(isNew ? "Create" : "Edit")" asp-route-id="@(isNew ? null : Model.Id)" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card admin-card">
+                <div class="card-body">
+                    <h6 class="card-section-title">Yetenek Bilgileri</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" placeholder="ASP.NET Core" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Category" class="form-label"></label>
+                            <select asp-for="Category" asp-items="Html.GetEnumSelectList<SkillCategory>()" class="form-select"></select>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Proficiency" class="form-label d-flex justify-content-between">
+                                <span>Seviye</span>
+                                <span class="fw-bold text-primary"><span id="profValue">@Model.Proficiency</span>%</span>
+                            </label>
+                            <input asp-for="Proficiency" type="range" class="form-range" min="0" max="100" step="5"
+                                   oninput="document.getElementById('profValue').textContent = this.value" />
+                            <div class="d-flex justify-content-between small text-body-secondary">
+                                <span>Başlangıç</span><span>Orta</span><span>İleri</span><span>Uzman</span>
+                            </div>
+                            <span asp-validation-for="Proficiency" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-8">
+                            <label asp-for="IconClass" class="form-label"></label>
+                            <input asp-for="IconClass" class="form-control font-monospace" placeholder="devicon-csharp-plain veya bi bi-cpu" data-icon-preview="#iconPreview" />
+                            <div class="form-text">
+                                <a href="https://devicon.dev" target="_blank" rel="noopener">Devicon</a> veya
+                                <a href="https://icons.getbootstrap.com" target="_blank" rel="noopener">Bootstrap Icons</a> sınıf adı.
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <span class="icon-preview" id="iconPreview"><i class="@(Model.IconClass ?? "bi bi-code-slash")"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <partial name="_PublishFields" model="(Model.DisplayOrder, Model.IsVisible)" />
+            <div class="mt-4"><partial name="_FormActions" model="isNew" /></div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

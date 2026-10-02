@@ -1,0 +1,97 @@
+@model CvDto
+@{
+    var p = Model.Profile;
+    // Kod kartında gösterilecek en güçlü 3 teknik yetenek (kişisel yetkinlikler ve araçlar hariç)
+    var stack = Model.SkillGroups.SelectMany(g => g.Skills)
+        .Where(s => s.Category is not (CvPortal.Domain.Enums.SkillCategory.SoftSkill or CvPortal.Domain.Enums.SkillCategory.Tools))
+        .OrderByDescending(s => s.Proficiency).Take(3).Select(s => $"\"{s.Name}\"");
+    var firstName = p.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? p.FullName;
+}
+
+<section class="hero" id="home">
+    <div class="hero-bg" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="container position-relative">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7 reveal">
+                @if (p.IsOpenToWork)
+                {
+                    <span class="status-pill"><span class="pulse"></span> Yeni fırsatlara açığım</span>
+                }
+                <p class="hero-greeting">Merhaba, ben</p>
+                <h1 class="hero-title">@p.FullName</h1>
+                <h2 class="hero-subtitle"><span class="text-gradient">@p.Title</span></h2>
+                <p class="hero-lead">@p.Headline</p>
+
+                <div class="d-flex flex-wrap gap-3 mt-4 no-print">
+                    <a href="#contact" class="btn btn-gradient btn-lg"><i class="bi bi-send me-2"></i>İletişime Geç</a>
+                    @if (!string.IsNullOrWhiteSpace(p.CvFileUrl))
+                    {
+                        <a href="@p.CvFileUrl" class="btn btn-soft btn-lg" download><i class="bi bi-download me-2"></i>CV İndir</a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-soft btn-lg" onclick="window.print()"><i class="bi bi-file-earmark-pdf me-2"></i>PDF Olarak Kaydet</button>
+                    }
+                </div>
+
+                <div class="mt-4">
+                    <partial name="_SocialLinks" model="p" />
+                </div>
+            </div>
+
+            <div class="col-lg-5 reveal no-print">
+                <div class="hero-visual">
+                    <div class="avatar-ring">
+                        <img src="@(string.IsNullOrWhiteSpace(p.AvatarUrl) ? "/images/avatar.svg" : p.AvatarUrl)" alt="@p.FullName" />
+                    </div>
+                    <div class="code-card">
+                        <div class="code-card-header">
+                            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
+                            <span class="ms-2">@(firstName).cs</span>
+                        </div>
+<pre><code><span class="tk-kw">public sealed class</span> <span class="tk-type">Engineer</span>
+{
+    <span class="tk-kw">public string</span> Name =&gt; <span class="tk-str">"@p.FullName"</span>;
+    <span class="tk-kw">public string</span>[] Stack =&gt;
+        [<span class="tk-str">@string.Join(", ", stack)</span>];
+    <span class="tk-kw">public int</span> Years =&gt; <span class="tk-num">@Model.Stats.YearsOfExperience</span>;
+    <span class="tk-kw">public bool</span> OpenToWork =&gt; <span class="tk-kw">@(p.IsOpenToWork ? "true" : "false")</span>;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 stats reveal">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="@Model.Stats.YearsOfExperience">@Model.Stats.YearsOfExperience</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">Yıl Deneyim</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="@Model.Stats.CompanyCount">@Model.Stats.CompanyCount</span>
+                    <span class="stat-label">Şirket</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="@Model.Stats.ProjectCount">@Model.Stats.ProjectCount</span>
+                    <span class="stat-label">Proje</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <span class="stat-value" data-count="@Model.Stats.TechnologyCount">@Model.Stats.TechnologyCount</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">Teknoloji</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

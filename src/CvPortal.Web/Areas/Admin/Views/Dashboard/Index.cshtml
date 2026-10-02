@@ -1,0 +1,163 @@
+@model DashboardDto
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["Subtitle"] = "CV içeriğinize genel bakış";
+    var userName = User.Identity?.Name ?? "Yönetici";
+
+    var cards = new (string Label, int Count, string Icon, string Controller, string Color)[]
+    {
+        ("Deneyim", Model.ExperienceCount, "bi-briefcase", "Experiences", "indigo"),
+        ("Proje", Model.ProjectCount, "bi-kanban", "Projects", "cyan"),
+        ("Yetenek", Model.SkillCount, "bi-cpu", "Skills", "violet"),
+        ("Eğitim", Model.EducationCount, "bi-mortarboard", "Educations", "amber"),
+        ("Sertifika", Model.CertificateCount, "bi-patch-check", "Certificates", "emerald"),
+        ("Dil", Model.LanguageCount, "bi-translate", "Languages", "rose")
+    };
+    var maxSkill = Model.SkillsByCategory.Count > 0 ? Model.SkillsByCategory.Max(x => x.Count) : 1;
+}
+
+<div class="welcome-banner">
+    <div>
+        <h2>Merhaba, @userName!</h2>
+        <p>
+            @if (Model.UnreadMessageCount > 0)
+            {
+                <text><strong>@Model.UnreadMessageCount</strong> okunmamış mesajınız var.</text>
+            }
+            else
+            {
+                <text>Tüm mesajlarınızı okudunuz. Harika!</text>
+            }
+            @if (Model.HiddenItemCount > 0)
+            {
+                <text> Sitede gizli <strong>@Model.HiddenItemCount</strong> içerik bulunuyor.</text>
+            }
+        </p>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <a asp-controller="Experiences" asp-action="Create" class="btn btn-light btn-sm"><i class="bi bi-plus-lg me-1"></i>Deneyim</a>
+            <a asp-controller="Projects" asp-action="Create" class="btn btn-light btn-sm"><i class="bi bi-plus-lg me-1"></i>Proje</a>
+            <a asp-controller="Skills" asp-action="Create" class="btn btn-light btn-sm"><i class="bi bi-plus-lg me-1"></i>Yetenek</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" target="_blank" class="btn btn-outline-light btn-sm"><i class="bi bi-eye me-1"></i>Siteyi görüntüle</a>
+        </div>
+    </div>
+    <div class="completion-ring" style="--p:@Model.ProfileCompletion" title="Profil doluluk oranı">
+        <div><strong>%@Model.ProfileCompletion</strong><small>Profil</small></div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    @foreach (var card in cards)
+    {
+        <div class="col-6 col-md-4 col-xl-2">
+            <a asp-controller="@card.Controller" asp-action="Index" class="stat-tile tone-@card.Color">
+                <span class="stat-tile-icon"><i class="bi @card.Icon"></i></span>
+                <span class="stat-tile-value">@card.Count</span>
+                <span class="stat-tile-label">@card.Label</span>
+            </a>
+        </div>
+    }
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="card admin-card h-100">
+            <div class="card-header-flex">
+                <h5><i class="bi bi-envelope me-2"></i>Son Mesajlar</h5>
+                <a asp-controller="Messages" asp-action="Index" class="small">Tümünü gör <i class="bi bi-arrow-right"></i></a>
+            </div>
+            @if (Model.RecentMessages.Count == 0)
+            {
+                <div class="p-4 text-center text-body-secondary small">Henüz mesaj yok.</div>
+            }
+            else
+            {
+                <div class="message-list">
+                    @foreach (var m in Model.RecentMessages)
+                    {
+                        <a asp-controller="Messages" asp-action="Details" asp-route-id="@m.Id" class="message-row @(m.IsRead ? "" : "unread")">
+                            <span class="avatar-sm">@DisplayHelpers.Initials(m.Name)</span>
+                            <span class="flex-grow-1 min-w-0">
+                                <span class="d-flex justify-content-between gap-2">
+                                    <span class="message-from">@m.Name</span>
+                                    <span class="message-date">@DisplayHelpers.Relative(m.CreatedAt)</span>
+                                </span>
+                                <span class="message-subject">@m.Subject</span>
+                                <span class="message-preview">@DisplayHelpers.Truncate(m.Message, 90)</span>
+                            </span>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-xl-5 d-flex flex-column gap-4">
+        <div class="card admin-card">
+            <div class="card-body">
+                <h5 class="card-section-title">Profil Doluluğu</h5>
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="progress flex-grow-1" role="progressbar" aria-valuenow="@Model.ProfileCompletion" aria-valuemin="0" aria-valuemax="100" style="height: 8px">
+                        <div class="progress-bar" style="width: @Model.ProfileCompletion%"></div>
+                    </div>
+                    <strong>%@Model.ProfileCompletion</strong>
+                </div>
+                @if (Model.MissingProfileFields.Count > 0)
+                {
+                    <p class="small text-body-secondary mb-2">Eksik alanlar:</p>
+                    <div class="d-flex flex-wrap gap-1">
+                        @foreach (var field in Model.MissingProfileFields)
+                        {
+                            <span class="badge bg-warning-subtle text-warning-emphasis">@field</span>
+                        }
+                    </div>
+                    <a asp-controller="Profile" asp-action="Index" class="btn btn-sm btn-outline-primary mt-3">Profili tamamla</a>
+                }
+                else
+                {
+                    <p class="small text-success mb-0"><i class="bi bi-check-circle me-1"></i>Profiliniz eksiksiz.</p>
+                }
+            </div>
+        </div>
+
+        <div class="card admin-card">
+            <div class="card-body">
+                <h5 class="card-section-title">Kategoriye Göre Yetenekler</h5>
+                @foreach (var item in Model.SkillsByCategory)
+                {
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between small"><span>@item.Name</span><strong>@item.Count</strong></div>
+                        <div class="progress" style="height: 6px">
+                            <div class="progress-bar bg-gradient-accent" style="width: @(item.Count * 100 / maxSkill)%"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card admin-card">
+            <div class="card-body">
+                <h5 class="card-section-title">En Çok Kullanılan Teknolojiler</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var tech in Model.TopTechnologies)
+                    {
+                        <span class="tech-pill">@tech.Name <span>@tech.Count</span></span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card admin-card mt-4 api-card">
+    <div class="card-body d-flex flex-column flex-md-row gap-3 align-items-md-center">
+        <span class="api-icon"><i class="bi bi-plug"></i></span>
+        <div class="flex-grow-1">
+            <h5 class="mb-1 fw-bold">Başka bir panelden yönetmek ister misiniz?</h5>
+            <p class="mb-0 small text-body-secondary">
+                Tüm içerikler <code>/api/v1/*</code> altındaki REST uç noktalarıyla yönetilebilir.
+                İstekte <code>X-Api-Key</code> başlığını gönderin (değer: <code>appsettings.json → Api:ApiKey</code>).
+            </p>
+        </div>
+        <a href="/scalar/v1" target="_blank" class="btn btn-primary text-nowrap"><i class="bi bi-braces me-1"></i>API Dokümantasyonu</a>
+    </div>
+</div>

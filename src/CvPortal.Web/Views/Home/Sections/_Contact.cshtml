@@ -1,0 +1,88 @@
+@model HomeViewModel
+@{
+    var p = Model.Cv.Profile;
+}
+
+<section class="section section-alt" id="contact">
+    <div class="container">
+        <div class="section-heading reveal text-center mx-auto">
+            <span class="section-kicker">06 · İletişim</span>
+            <h2>Birlikte <span class="text-gradient">bir şeyler üretelim</span></h2>
+            <p class="text-body-secondary">Yeni bir proje, iş fırsatı ya da sadece merhaba demek için mesaj bırakabilirsiniz.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 reveal">
+                <div class="glass-card h-100 contact-info">
+                    <a href="mailto:@p.Email" class="contact-item">
+                        <span class="contact-icon"><i class="bi bi-envelope"></i></span>
+                        <span><small>E-posta</small>@p.Email</span>
+                    </a>
+                    @if (!string.IsNullOrWhiteSpace(p.Phone))
+                    {
+                        <a href="tel:@p.Phone.Replace(" ", "")" class="contact-item">
+                            <span class="contact-icon"><i class="bi bi-telephone"></i></span>
+                            <span><small>Telefon</small>@p.Phone</span>
+                        </a>
+                    }
+                    <div class="contact-item">
+                        <span class="contact-icon"><i class="bi bi-geo-alt"></i></span>
+                        <span><small>Konum</small>@p.Location</span>
+                    </div>
+                    <hr class="my-4 opacity-25" />
+                    <partial name="_SocialLinks" model="p" />
+                </div>
+            </div>
+
+            <div class="col-lg-6 reveal no-print">
+                <div class="glass-card">
+                    @if (TempData["ContactSuccess"] is string success)
+                    {
+                        <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> @success
+                        </div>
+                    }
+
+                    <form asp-controller="Home" asp-action="Contact" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="Contact.Name" class="form-control" placeholder="Adınız" autocomplete="name" />
+                                    <label asp-for="Contact.Name"></label>
+                                </div>
+                                <span asp-validation-for="Contact.Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="Contact.Email" class="form-control" placeholder="E-posta" autocomplete="email" />
+                                    <label asp-for="Contact.Email"></label>
+                                </div>
+                                <span asp-validation-for="Contact.Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input asp-for="Contact.Subject" class="form-control" placeholder="Konu" />
+                                    <label asp-for="Contact.Subject"></label>
+                                </div>
+                                <span asp-validation-for="Contact.Subject" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea asp-for="Contact.Message" class="form-control" placeholder="Mesaj" style="height: 160px"></textarea>
+                                    <label asp-for="Contact.Message"></label>
+                                </div>
+                                <span asp-validation-for="Contact.Message" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-gradient btn-lg w-100">
+                                    <i class="bi bi-send me-2"></i>Mesajı Gönder
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

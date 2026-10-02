@@ -1,0 +1,50 @@
+@model IReadOnlyList<EducationDto>
+@{
+    ViewData["Title"] = "Eğitim";
+    ViewData["Subtitle"] = $"{Model.Count} kayıt · {Model.Count(x => x.IsVisible)} yayında";
+}
+
+<div class="card admin-card">
+    <div class="card-header-flex">
+        <input type="search" class="form-control form-control-sm table-search" placeholder="Ara..." data-table-search="#educationTable" />
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Yeni Eğitim</a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <partial name="_EmptyState" model="@("Okul ve bölüm bilgilerinizi ekleyin.")" />
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table admin-table align-middle mb-0" id="educationTable">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Sıra</th>
+                        <th>Okul</th>
+                        <th>Derece / Bölüm</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="@(item.IsVisible ? "" : "row-muted")">
+                            <td><span class="order-pill">@item.DisplayOrder</span></td>
+                            <td class="fw-semibold">@item.School</td>
+                            <td>
+                                <div>@item.Degree</div>
+                                <div class="small text-body-secondary">@item.FieldOfStudy @(item.Grade is null ? "" : $"· {item.Grade}")</div>
+                            </td>
+                            <td class="small">@item.Period</td>
+                            <td><partial name="_StatusBadge" model="item.IsVisible" /></td>
+                            <td class="text-end"><partial name="_RowActions" model="new RowActionsModel(item.Id, item.IsVisible, item.School)" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,84 @@
+@model ProjectDto
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "Yeni Proje" : "Projeyi Düzenle";
+    ViewData["Subtitle"] = isNew ? "Portfolyonuza yeni bir proje ekleyin" : Model.Title;
+}
+
+<form asp-action="@(isNew ? "Create" : "Edit")" asp-route-id="@(isNew ? null : Model.Id)" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card admin-card">
+                <div class="card-body">
+                    <h6 class="card-section-title">Proje Bilgileri</h6>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="CompletedAt" class="form-label"></label>
+                            <input asp-for="CompletedAt" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Summary" class="form-label"></label>
+                            <textarea asp-for="Summary" class="form-control" rows="2" data-counter="300"></textarea>
+                            <span asp-validation-for="Summary" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4" data-counter="3000"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="TechnologiesText" class="form-label"></label>
+                            <input asp-for="TechnologiesText" class="form-control" placeholder=".NET 10, React, PostgreSQL" data-tag-preview="#techPreview" />
+                            <div id="techPreview" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <h6 class="card-section-title mt-4">Bağlantılar & Görsel</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="GitHubUrl" class="form-label"></label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-github"></i></span><input asp-for="GitHubUrl" class="form-control" placeholder="https://github.com/..." /></div>
+                            <span asp-validation-for="GitHubUrl" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LiveUrl" class="form-label"></label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-globe"></i></span><input asp-for="LiveUrl" class="form-control" placeholder="https://" /></div>
+                            <span asp-validation-for="LiveUrl" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="ImageUrl" class="form-label"></label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="/images/projects/proje.png veya https://..." data-preview="#imagePreview" />
+                            <div class="form-text">Boş bırakılırsa sitede renkli bir kapak gösterilir.</div>
+                            <img id="imagePreview" src="@Model.ImageUrl" alt="" class="image-preview mt-2 @(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "d-none" : "")" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <partial name="_PublishFields" model="(Model.DisplayOrder, Model.IsVisible)" />
+            <div class="card admin-card mt-4">
+                <div class="card-body">
+                    <div class="form-check form-switch">
+                        <input asp-for="IsFeatured" class="form-check-input" role="switch" />
+                        <label asp-for="IsFeatured" class="form-check-label"></label>
+                    </div>
+                    <div class="form-text">Öne çıkan projeler listenin başında ve rozetle gösterilir.</div>
+                </div>
+            </div>
+            <div class="mt-4"><partial name="_FormActions" model="isNew" /></div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

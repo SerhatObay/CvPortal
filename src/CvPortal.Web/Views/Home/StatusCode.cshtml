@@ -1,0 +1,20 @@
+@model int
+@{
+    ViewData["Title"] = $"{Model} · Hata";
+    var (title, text) = Model switch
+    {
+        404 => ("Sayfa bulunamadı", "Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir."),
+        429 => ("Çok fazla istek", "Kısa sürede çok fazla istek gönderdiniz. Lütfen bir dakika sonra tekrar deneyin."),
+        403 => ("Erişim engellendi", "Bu sayfayı görüntüleme yetkiniz yok."),
+        _ => ("Bir şeyler ters gitti", "Beklenmeyen bir durum oluştu.")
+    };
+}
+
+<section class="error-page">
+    <div>
+        <div class="error-code text-gradient">@Model</div>
+        <h1 class="h3 fw-bold mt-3">@title</h1>
+        <p class="text-body-secondary">@text</p>
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-gradient mt-3"><i class="bi bi-house me-2"></i>Ana sayfaya dön</a>
+    </div>
+</section>

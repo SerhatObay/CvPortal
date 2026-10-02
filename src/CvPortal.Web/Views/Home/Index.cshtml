@@ -1,0 +1,36 @@
+@model HomeViewModel
+@{
+    var cv = Model.Cv;
+    ViewData["Title"] = $"{cv.Profile.FullName} · {cv.Profile.Title}";
+    ViewData["Description"] = cv.Profile.Headline;
+    ViewData["BrandName"] = cv.Profile.FullName;
+}
+
+<partial name="Sections/_Hero" model="cv" />
+<partial name="Sections/_About" model="cv" />
+
+@if (cv.Experiences.Count > 0)
+{
+    <partial name="Sections/_Experience" model="cv.Experiences" />
+}
+
+@if (cv.SkillGroups.Count > 0)
+{
+    <partial name="Sections/_Skills" model="cv.SkillGroups" />
+}
+
+@if (cv.Projects.Count > 0)
+{
+    <partial name="Sections/_Projects" model="cv.Projects" />
+}
+
+<partial name="Sections/_Education" model="cv" />
+<partial name="Sections/_Contact" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    @if (ViewData["ScrollTo"] is string target)
+    {
+        <script>document.getElementById('@target')?.scrollIntoView();</script>
+    }
+}

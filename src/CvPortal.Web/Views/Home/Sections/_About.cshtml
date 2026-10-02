@@ -1,0 +1,61 @@
+@model CvDto
+@{
+    var p = Model.Profile;
+    var paragraphs = p.About.Split(["\r\n\r\n", "\n\n"], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+}
+
+<section class="section" id="about">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="section-kicker">01 · Hakkımda</span>
+            <h2>Kod yazmayı değil, <span class="text-gradient">problem çözmeyi</span> seviyorum.</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7 reveal">
+                <div class="about-text">
+                    @foreach (var paragraph in paragraphs)
+                    {
+                        <p>@paragraph</p>
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-5 reveal">
+                <div class="glass-card h-100">
+                    <ul class="info-list">
+                        <li><i class="bi bi-geo-alt"></i><div><small>Konum</small><span>@p.Location</span></div></li>
+                        <li><i class="bi bi-envelope"></i><div><small>E-posta</small><a href="mailto:@p.Email">@p.Email</a></div></li>
+                        @if (!string.IsNullOrWhiteSpace(p.Phone))
+                        {
+                            <li><i class="bi bi-telephone"></i><div><small>Telefon</small><a href="tel:@p.Phone.Replace(" ", "")">@p.Phone</a></div></li>
+                        }
+                        <li><i class="bi bi-briefcase"></i><div><small>Deneyim</small><span>@Model.Stats.YearsOfExperience+ yıl · @Model.Stats.CompanyCount şirket</span></div></li>
+                        <li>
+                            <i class="bi bi-lightning-charge"></i>
+                            <div>
+                                <small>Durum</small>
+                                <span>@(p.IsOpenToWork ? "Yeni fırsatlara açık" : "Şu an aktif olarak aramıyor")</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    @if (Model.Languages.Count > 0)
+                    {
+                        <h6 class="mini-title mt-4">Diller</h6>
+                        @foreach (var lang in Model.Languages)
+                        {
+                            <div class="lang-row">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="fw-semibold">@lang.Name</span>
+                                    <span class="text-body-secondary">@lang.LevelName</span>
+                                </div>
+                                <div class="bar"><span class="bar-fill" style="--w:@(lang.LevelPercent)%"></span></div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

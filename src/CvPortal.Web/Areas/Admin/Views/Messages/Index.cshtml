@@ -1,0 +1,47 @@
+@model IReadOnlyList<ContactMessageDto>
+@{
+    var onlyUnread = ViewData["OnlyUnread"] is true;
+    ViewData["Title"] = "Mesajlar";
+    ViewData["Subtitle"] = "İletişim formundan gelen mesajlar";
+}
+
+<div class="card admin-card">
+    <div class="card-header-flex">
+        <ul class="nav nav-pills nav-pills-sm">
+            <li class="nav-item"><a asp-action="Index" class="nav-link @(onlyUnread ? "" : "active")">Tümü</a></li>
+            <li class="nav-item"><a asp-action="Index" asp-route-unread="true" class="nav-link @(onlyUnread ? "active" : "")">Okunmamış</a></li>
+        </ul>
+        <input type="search" class="form-control form-control-sm table-search" placeholder="Mesajlarda ara..." data-list-search="#messageList" />
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-envelope-open"></i></div>
+            <h6 class="fw-bold mb-1">@(onlyUnread ? "Okunmamış mesaj yok" : "Henüz mesaj yok")</h6>
+            <p class="text-body-secondary small mb-0">Ziyaretçiler sitedeki iletişim formunu kullandığında mesajlar burada görünür.</p>
+        </div>
+    }
+    else
+    {
+        <div class="message-list" id="messageList">
+            @foreach (var m in Model)
+            {
+                <div class="message-row @(m.IsRead ? "" : "unread")" data-search-item>
+                    <span class="avatar-sm">@DisplayHelpers.Initials(m.Name)</span>
+                    <a asp-action="Details" asp-route-id="@m.Id" class="flex-grow-1 min-w-0 text-decoration-none text-reset">
+                        <span class="d-flex justify-content-between gap-2">
+                            <span class="message-from">@m.Name <small class="text-body-secondary fw-normal">&lt;@m.Email&gt;</small></span>
+                            <span class="message-date" title="@DisplayHelpers.LocalDateTime(m.CreatedAt)">@DisplayHelpers.Relative(m.CreatedAt)</span>
+                        </span>
+                        <span class="message-subject">@m.Subject</span>
+                        <span class="message-preview">@DisplayHelpers.Truncate(m.Message, 140)</span>
+                    </a>
+                    <form asp-action="Delete" asp-route-id="@m.Id" method="post" data-confirm="Bu mesaj kalıcı olarak silinecek.">
+                        <button type="submit" class="btn btn-action btn-action-danger" title="Sil"><i class="bi bi-trash3"></i></button>
+                    </form>
+                </div>
+            }
+        </div>
+    }
+</div>

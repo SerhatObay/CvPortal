@@ -1,0 +1,17 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Hata";
+}
+
+<section class="error-page">
+    <div>
+        <div class="error-code text-gradient">500</div>
+        <h1 class="h3 fw-bold mt-3">Beklenmeyen bir hata oluştu</h1>
+        <p class="text-body-secondary">İsteğiniz işlenirken bir sorun yaşandı. Lütfen daha sonra tekrar deneyin.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p class="small text-body-secondary font-monospace">İstek No: @Model.RequestId</p>
+        }
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-gradient mt-3"><i class="bi bi-house me-2"></i>Ana sayfaya dön</a>
+    </div>
+</section>

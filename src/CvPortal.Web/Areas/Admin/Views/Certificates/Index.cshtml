@@ -1,0 +1,69 @@
+@model IReadOnlyList<CertificateDto>
+@{
+    ViewData["Title"] = "Sertifikalar";
+    ViewData["Subtitle"] = $"{Model.Count} sertifika";
+}
+
+<div class="card admin-card">
+    <div class="card-header-flex">
+        <input type="search" class="form-control form-control-sm table-search" placeholder="Ara..." data-table-search="#certTable" />
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Yeni Sertifika</a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <partial name="_EmptyState" model="@("Aldığınız sertifikaları ekleyin.")" />
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table admin-table align-middle mb-0" id="certTable">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Sıra</th>
+                        <th>Sertifika</th>
+                        <th>Veriliş</th>
+                        <th>Geçerlilik</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="@(item.IsVisible ? "" : "row-muted")">
+                            <td><span class="order-pill">@item.DisplayOrder</span></td>
+                            <td>
+                                <div class="fw-semibold">@item.Name</div>
+                                <div class="small text-body-secondary">
+                                    @item.Issuer
+                                    @if (!string.IsNullOrWhiteSpace(item.CredentialUrl))
+                                    {
+                                        <a href="@item.CredentialUrl" target="_blank" rel="noopener" class="ms-1"><i class="bi bi-link-45deg"></i></a>
+                                    }
+                                </div>
+                            </td>
+                            <td class="small">@DateRangeFormatter.MonthYear(item.IssueDate)</td>
+                            <td class="small">
+                                @if (item.ExpirationDate is null)
+                                {
+                                    <span class="text-body-secondary">Süresiz</span>
+                                }
+                                else if (item.IsExpired)
+                                {
+                                    <span class="badge bg-danger-subtle text-danger-emphasis">Süresi doldu</span>
+                                }
+                                else
+                                {
+                                    <span>@DateRangeFormatter.MonthYear(item.ExpirationDate.Value)</span>
+                                }
+                            </td>
+                            <td><partial name="_StatusBadge" model="item.IsVisible" /></td>
+                            <td class="text-end"><partial name="_RowActions" model="new RowActionsModel(item.Id, item.IsVisible, item.Name)" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

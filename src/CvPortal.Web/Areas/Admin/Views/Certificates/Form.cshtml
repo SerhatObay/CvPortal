@@ -1,0 +1,62 @@
+@model CertificateDto
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "Yeni Sertifika" : "Sertifikayı Düzenle";
+    ViewData["Subtitle"] = isNew ? "Bir sertifika veya rozet ekleyin" : Model.Name;
+}
+
+<form asp-action="@(isNew ? "Create" : "Edit")" asp-route-id="@(isNew ? null : Model.Id)" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card admin-card">
+                <div class="card-body">
+                    <h6 class="card-section-title">Sertifika Bilgileri</h6>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Microsoft Certified: Azure Developer Associate" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Issuer" class="form-label"></label>
+                            <input asp-for="Issuer" class="form-control" placeholder="Microsoft" />
+                            <span asp-validation-for="Issuer" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CredentialId" class="form-label"></label>
+                            <input asp-for="CredentialId" class="form-control font-monospace" />
+                            <span asp-validation-for="CredentialId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IssueDate" class="form-label"></label>
+                            <input asp-for="IssueDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                            <span asp-validation-for="IssueDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ExpirationDate" class="form-label"></label>
+                            <input asp-for="ExpirationDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                            <div class="form-text">Süresiz ise boş bırakın.</div>
+                            <span asp-validation-for="ExpirationDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="CredentialUrl" class="form-label"></label>
+                            <input asp-for="CredentialUrl" class="form-control" placeholder="https://" />
+                            <span asp-validation-for="CredentialUrl" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <partial name="_PublishFields" model="(Model.DisplayOrder, Model.IsVisible)" />
+            <div class="mt-4"><partial name="_FormActions" model="isNew" /></div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

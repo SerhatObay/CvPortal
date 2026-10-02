@@ -1,0 +1,77 @@
+@model IReadOnlyList<ProjectDto>
+@{
+    var icons = new[] { "bi-braces", "bi-cpu", "bi-hdd-network", "bi-terminal", "bi-cloud-check", "bi-diagram-3" };
+}
+
+<section class="section section-alt" id="projects">
+    <div class="container">
+        <div class="section-heading reveal d-flex flex-wrap justify-content-between align-items-end gap-3">
+            <div>
+                <span class="section-kicker">04 · Projeler</span>
+                <h2>Öne çıkan <span class="text-gradient">çalışmalarım</span></h2>
+            </div>
+            @if (Model.Any(p => p.IsFeatured) && Model.Any(p => !p.IsFeatured))
+            {
+                <div class="filter-group no-print" role="group" aria-label="Proje filtresi">
+                    <button type="button" class="filter-btn active" data-filter="all">Tümü</button>
+                    <button type="button" class="filter-btn" data-filter="featured">Öne Çıkanlar</button>
+                </div>
+            }
+        </div>
+
+        <div class="row g-4" id="projectGrid">
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                var project = Model[i];
+                <div class="col-md-6 col-lg-4 reveal project-col" data-featured="@project.IsFeatured.ToString().ToLowerInvariant()">
+                    <article class="project-card h-100">
+                        <div class="project-media">
+                            @if (!string.IsNullOrWhiteSpace(project.ImageUrl))
+                            {
+                                <img src="@project.ImageUrl" alt="@project.Title" loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="project-placeholder variant-@(i % 3)"><i class="bi @icons[i % icons.Length]"></i></div>
+                            }
+                            @if (project.IsFeatured)
+                            {
+                                <span class="featured-badge"><i class="bi bi-star-fill"></i> Öne çıkan</span>
+                            }
+                        </div>
+                        <div class="project-body">
+                            <h3 class="project-title">@project.Title</h3>
+                            <p class="project-summary">@project.Summary</p>
+                            @if (!string.IsNullOrWhiteSpace(project.Description))
+                            {
+                                <p class="small text-body-secondary">@project.Description</p>
+                            }
+                            <div class="chips">
+                                @foreach (var tech in project.Technologies)
+                                {
+                                    <span class="chip chip-sm">@tech</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="project-footer">
+                            @if (project.CompletedAt is { } done)
+                            {
+                                <span class="small text-body-secondary"><i class="bi bi-calendar3 me-1"></i>@DateRangeFormatter.MonthYear(done)</span>
+                            }
+                            <span class="ms-auto d-flex gap-2">
+                                @if (!string.IsNullOrWhiteSpace(project.GitHubUrl))
+                                {
+                                    <a href="@project.GitHubUrl" class="btn btn-icon btn-sm" target="_blank" rel="noopener" title="Kaynak kod"><i class="bi bi-github"></i></a>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(project.LiveUrl))
+                                {
+                                    <a href="@project.LiveUrl" class="btn btn-icon btn-sm" target="_blank" rel="noopener" title="Canlı demo"><i class="bi bi-box-arrow-up-right"></i></a>
+                                }
+                            </span>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    </div>
+</section>

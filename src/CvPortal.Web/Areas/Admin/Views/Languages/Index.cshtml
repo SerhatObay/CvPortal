@@ -1,0 +1,52 @@
+@model IReadOnlyList<LanguageDto>
+@{
+    ViewData["Title"] = "Diller";
+    ViewData["Subtitle"] = $"{Model.Count} dil";
+}
+
+<div class="card admin-card">
+    <div class="card-header-flex">
+        <span class="text-body-secondary small">Konuştuğunuz diller ve seviyeleri</span>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Yeni Dil</a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <partial name="_EmptyState" model="@("Konuştuğunuz dilleri ekleyin.")" />
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table admin-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Sıra</th>
+                        <th>Dil</th>
+                        <th style="min-width:220px">Seviye</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="@(item.IsVisible ? "" : "row-muted")">
+                            <td><span class="order-pill">@item.DisplayOrder</span></td>
+                            <td class="fw-semibold">@item.Name</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height:6px">
+                                        <div class="progress-bar bg-gradient-accent" style="width:@(item.LevelPercent)%"></div>
+                                    </div>
+                                    <span class="small text-body-secondary text-nowrap">@item.LevelName</span>
+                                </div>
+                            </td>
+                            <td><partial name="_StatusBadge" model="item.IsVisible" /></td>
+                            <td class="text-end"><partial name="_RowActions" model="new RowActionsModel(item.Id, item.IsVisible, item.Name)" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

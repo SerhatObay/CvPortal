@@ -1,0 +1,128 @@
+@model ProfileDto
+@{
+    ViewData["Title"] = "Profil";
+    ViewData["Subtitle"] = "Sitenin üst bölümünde ve iletişim alanında görünen bilgiler";
+}
+
+<form asp-action="Index" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card admin-card mb-4">
+                <div class="card-body">
+                    <h6 class="card-section-title">Temel Bilgiler</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" placeholder="Senior Software Engineer" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Headline" class="form-label"></label>
+                            <textarea asp-for="Headline" class="form-control" rows="2" data-counter="250"></textarea>
+                            <span asp-validation-for="Headline" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="About" class="form-label"></label>
+                            <textarea asp-for="About" class="form-control" rows="8" data-counter="4000"></textarea>
+                            <div class="form-text">Paragrafları boş bir satırla ayırın.</div>
+                            <span asp-validation-for="About" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CareerStartDate" class="form-label"></label>
+                            <input asp-for="CareerStartDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                            <div class="form-text">"Yıl deneyim" istatistiği bu tarihten hesaplanır.</div>
+                            <span asp-validation-for="CareerStartDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="form-check form-switch mt-md-3">
+                                <input asp-for="IsOpenToWork" class="form-check-input" role="switch" />
+                                <label asp-for="IsOpenToWork" class="form-check-label"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card admin-card">
+                <div class="card-body">
+                    <h6 class="card-section-title">İletişim & Sosyal Medya</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Location" class="form-label"></label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="WebsiteUrl" class="form-label"></label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-globe2"></i></span><input asp-for="WebsiteUrl" class="form-control" placeholder="https://" /></div>
+                            <span asp-validation-for="WebsiteUrl" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="GitHubUrl" class="form-label"></label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-github"></i></span><input asp-for="GitHubUrl" class="form-control" placeholder="https://github.com/..." /></div>
+                            <span asp-validation-for="GitHubUrl" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="LinkedInUrl" class="form-label"></label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-linkedin"></i></span><input asp-for="LinkedInUrl" class="form-control" placeholder="https://linkedin.com/in/..." /></div>
+                            <span asp-validation-for="LinkedInUrl" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="MediumUrl" class="form-label"></label>
+                            <div class="input-group"><span class="input-group-text"><i class="bi bi-medium"></i></span><input asp-for="MediumUrl" class="form-control" placeholder="https://medium.com/@@..." /></div>
+                            <span asp-validation-for="MediumUrl" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card admin-card mb-4">
+                <div class="card-body text-center">
+                    <h6 class="card-section-title text-start">Profil Fotoğrafı</h6>
+                    <img id="avatarPreview" src="@(string.IsNullOrWhiteSpace(Model.AvatarUrl) ? "/images/avatar.svg" : Model.AvatarUrl)" alt="Önizleme" class="avatar-preview" />
+                    <div class="text-start mt-3">
+                        <label asp-for="AvatarUrl" class="form-label"></label>
+                        <input asp-for="AvatarUrl" class="form-control" data-preview="#avatarPreview" placeholder="/images/avatar.svg veya https://..." />
+                        <div class="form-text">wwwroot/images altına dosya koyup yolunu yazabilirsiniz.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card admin-card mb-4">
+                <div class="card-body">
+                    <h6 class="card-section-title">CV Dosyası</h6>
+                    <label asp-for="CvFileUrl" class="form-label"></label>
+                    <input asp-for="CvFileUrl" class="form-control" placeholder="/files/cv.pdf" />
+                    <div class="form-text">Boş bırakılırsa sitede "PDF olarak kaydet" (yazdır) butonu gösterilir.</div>
+                </div>
+            </div>
+            @if (Model.UpdatedAt is { } updated)
+            {
+                <p class="small text-body-secondary"><i class="bi bi-clock-history me-1"></i>Son güncelleme: @DisplayHelpers.LocalDateTime(updated)</p>
+            }
+            <button type="submit" class="btn btn-primary btn-lg w-100"><i class="bi bi-check2 me-1"></i>Profili kaydet</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

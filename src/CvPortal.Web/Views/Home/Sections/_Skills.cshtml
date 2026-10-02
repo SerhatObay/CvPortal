@@ -1,0 +1,37 @@
+@model IReadOnlyList<SkillGroupDto>
+
+<section class="section" id="skills">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="section-kicker">03 · Yetenekler</span>
+            <h2>Teknoloji <span class="text-gradient">yığınım</span></h2>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var group in Model)
+            {
+                <div class="col-md-6 col-xl-4 reveal">
+                    <div class="glass-card skill-card h-100">
+                        <h3 class="skill-card-title">@group.Category</h3>
+                        @foreach (var skill in group.Skills)
+                        {
+                            <div class="skill-row">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="skill-name">
+                                        @if (!string.IsNullOrWhiteSpace(skill.IconClass))
+                                        {
+                                            <i class="@skill.IconClass"></i>
+                                        }
+                                        @skill.Name
+                                    </span>
+                                    <span class="skill-level" title="@skill.Proficiency%">@skill.LevelName</span>
+                                </div>
+                                <div class="bar"><span class="bar-fill" style="--w:@(skill.Proficiency)%"></span></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,73 @@
+@model EducationDto
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "Yeni Eğitim" : "Eğitimi Düzenle";
+    ViewData["Subtitle"] = isNew ? "Okul / bölüm bilgisi ekleyin" : Model.School;
+}
+
+<form asp-action="@(isNew ? "Create" : "Edit")" asp-route-id="@(isNew ? null : Model.Id)" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="card admin-card">
+                <div class="card-body">
+                    <h6 class="card-section-title">Eğitim Bilgileri</h6>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="School" class="form-label"></label>
+                            <input asp-for="School" class="form-control" />
+                            <span asp-validation-for="School" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Degree" class="form-label"></label>
+                            <input asp-for="Degree" class="form-control" list="degreeOptions" placeholder="Lisans" />
+                            <datalist id="degreeOptions">
+                                <option value="Ön Lisans"></option>
+                                <option value="Lisans"></option>
+                                <option value="Yüksek Lisans"></option>
+                                <option value="Doktora"></option>
+                                <option value="Bootcamp"></option>
+                            </datalist>
+                            <span asp-validation-for="Degree" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FieldOfStudy" class="form-label"></label>
+                            <input asp-for="FieldOfStudy" class="form-control" placeholder="Bilgisayar Mühendisliği" />
+                            <span asp-validation-for="FieldOfStudy" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="StartDate" class="form-label"></label>
+                            <input asp-for="StartDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="EndDate" class="form-label"></label>
+                            <input asp-for="EndDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Grade" class="form-label"></label>
+                            <input asp-for="Grade" class="form-control" placeholder="3.50 / 4.00" />
+                            <span asp-validation-for="Grade" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Bitirme projesi, kulüpler, burslar..." data-counter="1000"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <partial name="_PublishFields" model="(Model.DisplayOrder, Model.IsVisible)" />
+            <div class="mt-4"><partial name="_FormActions" model="isNew" /></div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

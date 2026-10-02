@@ -1,0 +1,19 @@
+@model ProfileDto
+@{
+    var links = new (string? Url, string Icon, string Label)[]
+    {
+        (Model.GitHubUrl, "bi-github", "GitHub"),
+        (Model.LinkedInUrl, "bi-linkedin", "LinkedIn"),
+        (Model.MediumUrl, "bi-medium", "Medium"),
+        (Model.WebsiteUrl, "bi-globe2", "Web sitesi"),
+        ($"mailto:{Model.Email}", "bi-envelope", "E-posta")
+    };
+}
+<div class="social-links">
+    @foreach (var link in links.Where(l => !string.IsNullOrWhiteSpace(l.Url)))
+    {
+        <a href="@link.Url" target="_blank" rel="noopener" title="@link.Label" aria-label="@link.Label">
+            <i class="bi @link.Icon"></i>
+        </a>
+    }
+</div>

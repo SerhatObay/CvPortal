@@ -1,0 +1,71 @@
+@model CvDto
+
+@if (Model.Educations.Count > 0 || Model.Certificates.Count > 0)
+{
+    <section class="section" id="education">
+        <div class="container">
+            <div class="section-heading reveal">
+                <span class="section-kicker">05 · Eğitim & Sertifikalar</span>
+                <h2>Sürekli <span class="text-gradient">öğrenme</span></h2>
+            </div>
+
+            <div class="row g-4">
+                @if (Model.Educations.Count > 0)
+                {
+                    <div class="col-lg-6">
+                        <h3 class="mini-title reveal"><i class="bi bi-mortarboard me-2"></i>Eğitim</h3>
+                        @foreach (var edu in Model.Educations)
+                        {
+                            <div class="glass-card edu-card reveal">
+                                <div class="d-flex justify-content-between flex-wrap gap-2">
+                                    <div>
+                                        <h4 class="edu-school">@edu.School</h4>
+                                        <div class="edu-degree">@edu.Degree · @edu.FieldOfStudy</div>
+                                    </div>
+                                    <span class="period-badge align-self-start">@edu.Period</span>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(edu.Grade))
+                                {
+                                    <div class="small mt-2"><i class="bi bi-award me-1 text-accent"></i>Not ortalaması: <strong>@edu.Grade</strong></div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(edu.Description))
+                                {
+                                    <p class="small text-body-secondary mb-0 mt-2">@edu.Description</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (Model.Certificates.Count > 0)
+                {
+                    <div class="col-lg-6">
+                        <h3 class="mini-title reveal"><i class="bi bi-patch-check me-2"></i>Sertifikalar</h3>
+                        @foreach (var cert in Model.Certificates)
+                        {
+                            <div class="glass-card cert-card reveal">
+                                <div class="cert-icon"><i class="bi bi-patch-check-fill"></i></div>
+                                <div class="flex-grow-1">
+                                    <h4 class="cert-name">@cert.Name</h4>
+                                    <div class="small text-body-secondary">
+                                        @cert.Issuer · @DateRangeFormatter.MonthYear(cert.IssueDate)
+                                        @if (cert.IsExpired)
+                                        {
+                                            <span class="badge text-bg-secondary ms-1">Süresi doldu</span>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(cert.CredentialUrl))
+                                    {
+                                        <a href="@cert.CredentialUrl" target="_blank" rel="noopener" class="small link-accent">
+                                            Doğrula <i class="bi bi-arrow-up-right"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
