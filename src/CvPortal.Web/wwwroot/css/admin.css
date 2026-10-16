@@ -295,3 +295,12 @@ body { font-family: var(--font-sans); background: var(--bg); -webkit-font-smooth
 .login-form-side { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
 .login-card { width: 100%; max-width: 420px; }
 .login-card .input-group-text { background: var(--card); border-color: var(--border); color: var(--muted); }
+
+/* ---------- Kurulum sihirbazı ---------- */
+.login-card.setup-card { max-width: 560px; }
+.setup-steps { padding-left: 0; }
+
+/* ---------- Ayarlar ---------- */
+.code-sample { background: var(--hover); border: 1px solid var(--border); border-radius: 10px; padding: .75rem 1rem; font-size: .8rem; white-space: pre-wrap; word-break: break-all; }
+.danger-zone { border-color: rgba(239, 68, 68, .35); }
+button.status-badge { cursor: pointer; }

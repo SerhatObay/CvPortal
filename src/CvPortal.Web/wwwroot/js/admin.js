@@ -112,6 +112,29 @@
         });
     });
 
+    // ---- Gizli değeri göster / kopyala (API anahtarı) ----
+    document.querySelectorAll('[data-reveal]').forEach(btn => {
+        const input = document.querySelector(btn.dataset.reveal);
+        btn.addEventListener('click', () => {
+            if (!input) return;
+            const showing = input.value === input.dataset.secret;
+            input.value = showing ? input.dataset.masked : input.dataset.secret;
+            btn.innerHTML = showing ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
+    });
+
+    document.querySelectorAll('[data-copy]').forEach(btn => {
+        const input = document.querySelector(btn.dataset.copy);
+        btn.addEventListener('click', async () => {
+            if (!input) return;
+            try {
+                await navigator.clipboard.writeText(input.dataset.secret || input.value);
+                btn.innerHTML = '<i class="bi bi-clipboard-check"></i>';
+                setTimeout(() => { btn.innerHTML = '<i class="bi bi-clipboard"></i>'; }, 1500);
+            } catch { /* tarayıcı izin vermedi */ }
+        });
+    });
+
     // ---- Etiket önizleme (virgülle ayrılmış teknolojiler) ----
     document.querySelectorAll('[data-tag-preview]').forEach(input => {
         const target = document.querySelector(input.dataset.tagPreview);

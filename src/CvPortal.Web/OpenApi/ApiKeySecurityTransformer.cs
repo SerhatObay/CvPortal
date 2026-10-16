@@ -29,7 +29,7 @@ internal sealed class ApiKeySecurityTransformer : IOpenApiDocumentTransformer
             Type = SecuritySchemeType.ApiKey,
             In = ParameterLocation.Header,
             Name = ApiKeyAuthorizeAttribute.HeaderName,
-            Description = "appsettings.json → Api:ApiKey değeri"
+            Description = "Admin panel → Ayarlar → REST API bölümündeki anahtar"
         };
 
         document.Security ??= [];

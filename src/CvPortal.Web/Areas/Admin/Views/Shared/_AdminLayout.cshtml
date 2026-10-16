@@ -54,7 +54,8 @@
                     }
                 </a>
 
-                <span class="nav-section">Entegrasyon</span>
+                <span class="nav-section">Sistem</span>
+                <a asp-controller="Settings" asp-action="Index" class="@Active("Settings")"><i class="bi bi-gear"></i> Ayarlar</a>
                 <a href="/scalar/v1" target="_blank"><i class="bi bi-braces-asterisk"></i> API Dokümantasyonu <i class="bi bi-box-arrow-up-right ms-auto small opacity-50"></i></a>
             </nav>
 
@@ -94,6 +95,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                             <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index"><i class="bi bi-person me-2"></i>Profil</a></li>
+                            <li><a class="dropdown-item" asp-controller="Settings" asp-action="Index"><i class="bi bi-gear me-2"></i>Ayarlar ve şifre</a></li>
                             <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index" target="_blank"><i class="bi bi-globe me-2"></i>Siteyi görüntüle</a></li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>

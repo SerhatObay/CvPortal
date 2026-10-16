@@ -21,6 +21,8 @@ public static class DependencyInjection
         services.AddScoped<IContactMessageService, ContactMessageService>();
         services.AddScoped<ICvService, CvService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<ISiteSettingsService, SiteSettingsService>();
+        services.AddScoped<IContentResetService, ContentResetService>();
 
         return services;
     }

@@ -1,0 +1,132 @@
+@model SettingsViewModel
+@{
+    ViewData["Title"] = "Ayarlar";
+    ViewData["Subtitle"] = "Hesap, güvenlik ve entegrasyon ayarları";
+    var apiBase = $"{Context.Request.Scheme}://{Context.Request.Host}/api/v1";
+}
+
+<div class="row g-4">
+    <div class="col-xl-6">
+        @* ---------- Hesap ---------- *@
+        <div class="card admin-card mb-4">
+            <div class="card-body">
+                <h6 class="card-section-title"><i class="bi bi-person-circle me-1"></i> Hesap</h6>
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <span class="avatar-lg">@DisplayHelpers.Initials(Model.Account.DisplayName)</span>
+                    <div>
+                        <div class="fw-bold">@Model.Username</div>
+                        <div class="small text-body-secondary">
+                            Son giriş: @(Model.LastLoginAt is { } last ? DisplayHelpers.LocalDateTime(last) : "—")
+                        </div>
+                    </div>
+                </div>
+                <form asp-action="UpdateAccount" method="post" novalidate>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Account.DisplayName" class="form-label"></label>
+                            <input asp-for="Account.DisplayName" class="form-control" />
+                            <span asp-validation-for="Account.DisplayName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Account.Email" class="form-label"></label>
+                            <input asp-for="Account.Email" class="form-control" />
+                            <span asp-validation-for="Account.Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3"><i class="bi bi-check2 me-1"></i>Kaydet</button>
+                </form>
+            </div>
+        </div>
+
+        @* ---------- Şifre ---------- *@
+        <div class="card admin-card">
+            <div class="card-body">
+                <h6 class="card-section-title"><i class="bi bi-shield-lock me-1"></i> Şifre Değiştir</h6>
+                <form asp-action="ChangePassword" method="post" novalidate>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Password.CurrentPassword" class="form-label"></label>
+                            <input asp-for="Password.CurrentPassword" class="form-control" autocomplete="current-password" />
+                            <span asp-validation-for="Password.CurrentPassword" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Password.NewPassword" class="form-label"></label>
+                            <input asp-for="Password.NewPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password.NewPassword" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Password.ConfirmPassword" class="form-label"></label>
+                            <input asp-for="Password.ConfirmPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password.ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="form-text">En az 8 karakter; en az bir harf ve bir rakam.</div>
+                    <button type="submit" class="btn btn-primary mt-3"><i class="bi bi-key me-1"></i>Şifreyi değiştir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        @* ---------- REST API ---------- *@
+        <div class="card admin-card mb-4" id="api">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <h6 class="card-section-title mb-1"><i class="bi bi-plug me-1"></i> REST API</h6>
+                        <p class="small text-body-secondary mb-0">Başka bir panelden (React, mobil uygulama vb.) içeriği yönetmek için.</p>
+                    </div>
+                    <form asp-action="ToggleApi" method="post">
+                        <input type="hidden" name="enabled" value="@(!Model.Site.IsApiEnabled ? "true" : "false")" />
+                        @if (Model.Site.IsApiEnabled)
+                        {
+                            <button type="submit" class="status-badge status-live border-0"><i class="bi bi-circle-fill"></i> Açık · kapat</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="status-badge status-hidden border-0"><i class="bi bi-circle"></i> Kapalı · aç</button>
+                        }
+                    </form>
+                </div>
+
+                <label class="form-label" for="apiKey">API anahtarı (<code>X-Api-Key</code> başlığı)</label>
+                <div class="input-group">
+                    <input type="text" class="form-control font-monospace" id="apiKey" value="@Model.Site.MaskedApiKey"
+                           data-secret="@Model.Site.ApiKey" data-masked="@Model.Site.MaskedApiKey" readonly />
+                    <button type="button" class="btn btn-outline-secondary" data-reveal="#apiKey" title="Göster / gizle"><i class="bi bi-eye"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" data-copy="#apiKey" title="Kopyala"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <div class="form-text">Anahtarı yalnızca güvendiğiniz uygulamalarla paylaşın.</div>
+
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <form asp-action="RegenerateApiKey" method="post" data-confirm="Eski anahtarı kullanan tüm uygulamaların bağlantısı kesilecek.">
+                        <button type="submit" class="btn btn-light"><i class="bi bi-arrow-repeat me-1"></i>Yeni anahtar üret</button>
+                    </form>
+                    <a href="/scalar/v1" target="_blank" class="btn btn-light"><i class="bi bi-braces me-1"></i>API dokümantasyonu</a>
+                </div>
+
+                <pre class="code-sample mt-3 mb-0"><code>curl -H "X-Api-Key: &lt;anahtar&gt;" @apiBase/experiences</code></pre>
+            </div>
+        </div>
+
+        @* ---------- Tehlikeli bölge ---------- *@
+        <div class="card admin-card danger-zone">
+            <div class="card-body">
+                <h6 class="card-section-title text-danger"><i class="bi bi-exclamation-octagon me-1"></i> Tehlikeli Bölge</h6>
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
+                    <div>
+                        <div class="fw-semibold">Tüm CV içeriğini temizle</div>
+                        <div class="small text-body-secondary">Deneyim, eğitim, yetenek, proje, sertifika, dil ve mesajlar silinir. Profil ve hesabınız korunur.</div>
+                    </div>
+                    <form asp-action="ClearContent" method="post" data-confirm="Tüm CV içeriği ve mesajlar kalıcı olarak silinecek. Bu işlem geri alınamaz.">
+                        <button type="submit" class="btn btn-outline-danger text-nowrap"><i class="bi bi-trash3 me-1"></i>İçeriği temizle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

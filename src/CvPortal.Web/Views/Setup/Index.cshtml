@@ -1,0 +1,104 @@
+@model CvPortal.Web.Setup.SetupViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Kurulum · CvPortal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="login-body">
+    <div class="login-wrapper">
+        <section class="login-hero d-none d-lg-flex">
+            <div>
+                <span class="brand-mark brand-mark-lg">&lt;/&gt;</span>
+                <h1 class="mt-4">CvPortal'a<br />hoş geldiniz</h1>
+                <p class="lead">Birkaç bilgiyle kurulumu tamamlayın, CV siteniz yayına hazır.</p>
+                <ol class="login-features setup-steps">
+                    <li><i class="bi bi-database-check"></i> Veritabanı hazırlandı</li>
+                    <li><i class="bi bi-person-badge"></i> Kendinizi tanıtın</li>
+                    <li><i class="bi bi-shield-lock"></i> Yönetici hesabınızı oluşturun</li>
+                    <li><i class="bi bi-rocket-takeoff"></i> Admin panelden içeriğinizi düzenleyin</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="login-form-side">
+            <div class="login-card setup-card">
+                <div class="d-lg-none mb-4"><span class="brand-mark">&lt;/&gt;</span></div>
+                <span class="badge bg-success-subtle text-success-emphasis mb-2"><i class="bi bi-check-circle me-1"></i>Veritabanı bağlantısı başarılı</span>
+                <h2 class="fw-bold mb-1">İlk kurulum</h2>
+                <p class="text-body-secondary mb-4">Bu ekran yalnızca bir kez, ilk yönetici hesabı oluşturulana kadar görünür.</p>
+
+                <form asp-action="Index" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+                    <h6 class="card-section-title">Siz</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" autocomplete="name" autofocus />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" autocomplete="email" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <h6 class="card-section-title">Yönetici hesabı</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label asp-for="Username" class="form-label"></label>
+                            <input asp-for="Username" class="form-control" autocomplete="username" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12 form-text mt-1">En az 8 karakter; en az bir harf ve bir rakam.</div>
+                    </div>
+
+                    <h6 class="card-section-title">Seçenekler</h6>
+                    <div class="form-check form-switch mb-2">
+                        <input asp-for="StartEmpty" class="form-check-input" role="switch" />
+                        <label asp-for="StartEmpty" class="form-check-label"></label>
+                        <div class="form-text">Kapalı bırakırsanız örnek içerik kalır; nasıl göründüğünü görüp kendi bilgilerinizle değiştirebilirsiniz.</div>
+                    </div>
+                    <div class="form-check form-switch mb-4">
+                        <input asp-for="EnableApi" class="form-check-input" role="switch" />
+                        <label asp-for="EnableApi" class="form-check-label"></label>
+                        <div class="form-text">Sonradan Admin panel → Ayarlar ekranından değiştirilebilir.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100"><i class="bi bi-rocket-takeoff me-2"></i>Kurulumu tamamla</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

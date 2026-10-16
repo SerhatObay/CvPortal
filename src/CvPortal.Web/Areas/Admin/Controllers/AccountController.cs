@@ -2,6 +2,7 @@ using CvPortal.Web.Models;
 using CvPortal.Web.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CvPortal.Web.Areas.Admin.Controllers;
 
@@ -15,6 +16,7 @@ public class AccountController(IAdminAuthService authService) : AdminControllerB
     }
 
     [HttpPost, AllowAnonymous]
+    [EnableRateLimiting("login")]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid) return View(model);
