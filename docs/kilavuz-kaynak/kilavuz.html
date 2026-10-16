@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>CvPortal Kullanım Kılavuzu</title>
+<style>
+    @page {
+        size: A4;
+        margin: 20mm 18mm 20mm 18mm;
+        @bottom-left { content: "CvPortal · Kullanım Kılavuzu"; font: 8.5pt "Segoe UI", sans-serif; color: #94a3b8; }
+        @bottom-right { content: counter(page) " / " counter(pages); font: 8.5pt "Segoe UI", sans-serif; color: #94a3b8; }
+    }
+    @page cover { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+
+    :root {
+        --ink: #0f172a; --muted: #64748b; --line: #e2e8f0; --soft: #f1f5f9;
+        --accent: #6366f1; --accent-2: #22d3ee; --violet: #a855f7;
+        --ok: #059669; --warn: #b45309; --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { font-family: "Segoe UI", "Segoe UI Variable", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.55; margin: 0; }
+
+    /* ---------- Kapak ---------- */
+    .cover {
+        page: cover; height: 297mm; padding: 26mm 22mm; position: relative; overflow: hidden;
+        background: #0b1120; color: #e2e8f0; page-break-after: always;
+    }
+    .cover::before { content: ""; position: absolute; width: 150mm; height: 150mm; border-radius: 50%; background: radial-gradient(circle, rgba(99,102,241,.55), transparent 65%); top: -50mm; left: -40mm; }
+    .cover::after { content: ""; position: absolute; width: 130mm; height: 130mm; border-radius: 50%; background: radial-gradient(circle, rgba(34,211,238,.35), transparent 65%); bottom: -30mm; right: -30mm; }
+    .cover > * { position: relative; z-index: 1; }
+    .brand { display: flex; align-items: center; gap: 4mm; font-weight: 800; font-size: 15pt; color: #fff; }
+    .brand-mark { width: 13mm; height: 13mm; border-radius: 3.5mm; display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #a855f7 55%, #22d3ee); font-family: Consolas, monospace; font-size: 11pt; }
+    .cover h1 { font-size: 40pt; line-height: 1.05; margin: 30mm 0 4mm; font-weight: 800; letter-spacing: -.02em; color: #fff; }
+    .cover h1 span { background: linear-gradient(135deg, #818cf8, #c084fc 50%, #22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .cover .lead { font-size: 13pt; color: #94a3b8; max-width: 140mm; }
+    .cover .shot { margin-top: 14mm; border-radius: 4mm; overflow: hidden; border: 1px solid rgba(148,163,184,.25); box-shadow: 0 20mm 30mm -15mm rgba(0,0,0,.6); }
+    .cover .shot img { display: block; width: 100%; }
+    .cover .meta { position: absolute; bottom: 22mm; left: 22mm; right: 22mm; display: flex; justify-content: space-between; font-size: 9.5pt; color: #94a3b8; z-index: 1; }
+
+    /* ---------- İçerik ---------- */
+    h2 { font-size: 19pt; margin: 0 0 3mm; padding-top: 2mm; letter-spacing: -.01em; page-break-after: avoid; }
+    h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 9mm; height: 9mm; border-radius: 2.5mm; margin-right: 3mm; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; font-size: 12pt; vertical-align: 2px; }
+    h3 { font-size: 12.5pt; margin: 4.5mm 0 1.8mm; color: #1e293b; page-break-after: avoid; }
+    p { margin: 0 0 2.5mm; }
+    .chapter { page-break-before: always; }
+    .intro { color: var(--muted); font-size: 11pt; margin-bottom: 5mm; }
+    ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+    li { margin-bottom: 1.2mm; }
+    code, .kbd { font-family: Consolas, "Cascadia Mono", monospace; font-size: 9pt; background: var(--soft); border: 1px solid var(--line); border-radius: 1.2mm; padding: .2mm 1.2mm; }
+    pre { font-family: Consolas, monospace; font-size: 8.8pt; background: #0f172a; color: #e2e8f0; border-radius: 2.5mm; padding: 3.5mm 4mm; white-space: pre-wrap; word-break: break-all; margin: 0 0 3mm; page-break-inside: avoid; }
+    strong { color: #0b1120; }
+
+    figure { margin: 2mm 0 4mm; page-break-inside: avoid; }
+    figure img { display: block; width: 82%; margin: 0 auto; border-radius: 2.5mm; border: 1px solid var(--line); box-shadow: 0 2mm 5mm -2mm rgba(15,23,42,.25); }
+    figure.sm img { width: 68%; }
+    figure.xs img { width: 50%; }
+    .fine { font-size: 8.8pt; color: var(--warn); margin: -2mm 0 3mm; }
+    figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 1.8mm; text-align: center; }
+
+    table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; page-break-inside: avoid; }
+    th { text-align: left; background: var(--soft); color: #334155; font-weight: 700; font-size: 8.8pt; text-transform: uppercase; letter-spacing: .04em; }
+    th, td { padding: 2mm 2.5mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+    .note { border-radius: 2.5mm; padding: 3mm 4mm; margin: 3mm 0 4mm; font-size: 9.8pt; page-break-inside: avoid; border: 1px solid; }
+    .note b { display: block; margin-bottom: .8mm; }
+    .tip { background: #eef2ff; border-color: #c7d2fe; }
+    .tip b { color: #4338ca; }
+    .warn { background: #fffbeb; border-color: #fde68a; }
+    .warn b { color: var(--warn); }
+    .danger { background: #fef2f2; border-color: #fecaca; }
+    .danger b { color: var(--danger); }
+
+    .steps { counter-reset: s; list-style: none; padding: 0; }
+    .steps > li { counter-increment: s; position: relative; padding-left: 10mm; margin-bottom: 2.5mm; }
+    .steps > li::before { content: counter(s); position: absolute; left: 0; top: .2mm; width: 6.5mm; height: 6.5mm; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 8.5pt; display: flex; align-items: center; justify-content: center; }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+    .card { border: 1px solid var(--line); border-radius: 3mm; padding: 4mm; page-break-inside: avoid; }
+    .card h4 { margin: 0 0 1.5mm; font-size: 11pt; }
+    .card p { margin: 0; color: var(--muted); font-size: 9.5pt; }
+    .icon { display: inline-flex; width: 8mm; height: 8mm; border-radius: 2mm; align-items: center; justify-content: center; margin-bottom: 2mm; background: #eef2ff; color: var(--accent); font-weight: 800; }
+
+    /* İçindekiler */
+    .toc { list-style: none; padding: 0; margin: 4mm 0 0; }
+    .toc li { display: flex; align-items: baseline; gap: 2mm; padding: 2.2mm 0; border-bottom: 1px dashed var(--line); font-size: 11pt; }
+    .toc .n { color: var(--accent); font-weight: 800; width: 8mm; }
+    .toc .d { color: var(--muted); font-size: 9pt; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ================= KAPAK ================= -->
+<section class="cover">
+    <div class="brand"><span class="brand-mark">&lt;/&gt;</span> CvPortal</div>
+    <h1>Kullanım<br /><span>Kılavuzu</span></h1>
+    <p class="lead">Kişisel CV ve portfolyo sitenizi kurmak, içeriğinizi yönetmek ve yayında tutmak için ihtiyacınız olan her şey.</p>
+    <div class="shot"><img src="img/01-site.jpg" alt="CvPortal ana sayfa" /></div>
+    <div class="meta"><span>Sürüm 1.0 · .NET 10 · SQL Server</span><span>Ekim 2026</span></div>
+</section>
+
+<!-- ================= İÇİNDEKİLER ================= -->
+<section>
+    <h2>İçindekiler</h2>
+    <ol class="toc">
+        <li><span class="n">1</span> CvPortal nedir? <span class="d">Bileşenler ve temel kavramlar</span></li>
+        <li><span class="n">2</span> Kurulum <span class="d">Gereksinimler, ilk açılış, kurulum sihirbazı</span></li>
+        <li><span class="n">3</span> Yönetim paneline giriş <span class="d">Giriş, şifremi unuttum</span></li>
+        <li><span class="n">4</span> Dashboard <span class="d">Özet ekran</span></li>
+        <li><span class="n">5</span> Profil <span class="d">Kişisel bilgiler, fotoğraf ve CV yükleme</span></li>
+        <li><span class="n">6</span> CV içeriğini yönetme <span class="d">Deneyim, eğitim, yetenek, proje, sertifika, dil</span></li>
+        <li><span class="n">7</span> Mesajlar <span class="d">İletişim formundan gelenler</span></li>
+        <li><span class="n">8</span> Ayarlar <span class="d">Hesap, şifre, REST API, içerik temizleme</span></li>
+        <li><span class="n">9</span> Herkese açık site <span class="d">Ziyaretçilerin gördüğü sayfa</span></li>
+        <li><span class="n">10</span> Bakım <span class="d">Yedekleme, güncelleme, şifre sıfırlama</span></li>
+        <li><span class="n">11</span> Sorun giderme <span class="d">Sık karşılaşılan durumlar</span></li>
+    </ol>
+
+    <div class="note tip" style="margin-top:10mm">
+        <b>Bu kılavuz kimin için?</b>
+        CvPortal'ı satın alan ve kendi CV sitesini yönetecek kişi için hazırlanmıştır. Sunucuya kurulumun teknik ayrıntıları
+        (IIS, veritabanı izinleri, SQL scriptleri) paketteki <code>KURULUM.md</code> dosyasında ayrıca anlatılmıştır.
+    </div>
+</section>
+
+<!-- ================= 1. GENEL BAKIŞ ================= -->
+<section class="chapter">
+    <h2><span class="num">1</span>CvPortal nedir?</h2>
+    <p class="intro">CvPortal; bir yazılım mühendisinin özgeçmişini modern bir web sitesi olarak yayınlayan ve tüm içeriğin kod yazmadan, bir yönetim panelinden düzenlenmesini sağlayan hazır bir üründür.</p>
+
+    <div class="grid2">
+        <div class="card"><div class="icon">◎</div><h4>Herkese açık CV sitesi</h4><p>Ziyaretçilerin gördüğü tek sayfalık site: hakkımda, deneyim zaman çizelgesi, yetenekler, projeler, eğitim, sertifikalar ve iletişim formu. Açık/koyu tema ve mobil uyumlu.</p></div>
+        <div class="card"><div class="icon">⚙</div><h4>Yönetim paneli</h4><p><code>/Admin</code> adresindeki panelden tüm içerik eklenir, düzenlenir, gizlenir veya silinir. Fotoğraf ve CV dosyası doğrudan yüklenir.</p></div>
+        <div class="card"><div class="icon">✉</div><h4>Mesaj kutusu</h4><p>Sitedeki iletişim formundan gönderilen mesajlar panelde toplanır; okundu/okunmadı takibi yapılır, e-postayla yanıtlanır.</p></div>
+        <div class="card"><div class="icon">{ }</div><h4>REST API (isteğe bağlı)</h4><p>İçeriği başka bir panelden veya mobil uygulamadan yönetmek isteyenler için anahtarla korunan bir API. Varsayılan olarak kapalıdır.</p></div>
+    </div>
+
+    <h3>Temel kavramlar</h3>
+    <table>
+        <tr><th style="width:32%">Kavram</th><th>Anlamı</th></tr>
+        <tr><td><strong>Yayında / Gizli</strong></td><td>Her içerik kaydı sitede gösterilebilir ya da gizlenebilir. Gizli kayıtlar silinmez, yalnızca ziyaretçilere görünmez.</td></tr>
+        <tr><td><strong>Sıra</strong></td><td>Kayıtların sitede hangi sırayla listeleneceği. Küçük sayı önce gelir. 0 bırakılırsa kayıt listenin sonuna eklenir.</td></tr>
+        <tr><td><strong>Öne çıkan proje</strong></td><td>Yıldızla işaretlenen projeler listenin başında ve rozetle gösterilir.</td></tr>
+        <tr><td><strong>Örnek (demo) içerik</strong></td><td>İlk kurulumda sitenin nasıl görüneceğini göstermek için gelen hazır içerik. Kurulumda silinebilir ya da sonradan kendi bilgilerinizle değiştirilebilir.</td></tr>
+    </table>
+</section>
+
+<!-- ================= 2. KURULUM ================= -->
+<section class="chapter">
+    <h2><span class="num">2</span>Kurulum</h2>
+    <p class="intro">CvPortal "fişi tak çalıştır" mantığıyla tasarlanmıştır: veritabanı ve tablolar ilk açılışta otomatik oluşturulur.</p>
+
+    <h3>Gereksinimler</h3>
+    <table>
+        <tr><th style="width:30%">Bileşen</th><th style="width:30%">Sürüm</th><th>Not</th></tr>
+        <tr><td>İşletim sistemi</td><td>Windows 10/11, Windows Server 2016+</td><td></td></tr>
+        <tr><td>.NET</td><td>ASP.NET Core 10 Runtime</td><td>IIS için <strong>Hosting Bundle</strong></td></tr>
+        <tr><td>Veritabanı</td><td>SQL Server 2016 veya üzeri</td><td>Ücretsiz <strong>SQL Server Express</strong> yeterlidir</td></tr>
+        <tr><td>Yönetim aracı</td><td>SQL Server Management Studio</td><td>İsteğe bağlı (yedek alma için)</td></tr>
+    </table>
+
+    <h3>Hızlı başlangıç</h3>
+    <ol class="steps">
+        <li>Paketi bir klasöre çıkarın, örneğin <code>C:\CvPortal</code>.</li>
+        <li><code>appsettings.json</code> dosyasını Not Defteri ile açın ve <code>DefaultConnection</code> satırını kontrol edin. Bilgisayarınızda SQL Server Express kuruluysa varsayılan değer olduğu gibi çalışır:
+            <pre>"DefaultConnection": "Server=.\\SQLEXPRESS;Database=CvPortal;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True"</pre></li>
+        <li><code>CvPortal.Web.exe</code> dosyasına çift tıklayın. Açılan pencerede <code>Now listening on: http://localhost:5000</code> yazısını görün.</li>
+        <li>Tarayıcıda <strong>http://localhost:5000/setup</strong> adresini açın ve kurulum sihirbazını tamamlayın.</li>
+    </ol>
+
+    <div class="note tip"><b>Sunucuya (IIS) kurulum</b>Sitenizi internette yayınlamak için paketteki <code>KURULUM.md</code> dosyasının 4. bölümündeki adımları izleyin: Hosting Bundle, uygulama havuzu, <code>App_Data</code> klasör izni ve veritabanı izni.</div>
+
+    <h3>İlk kurulum sihirbazı</h3>
+    <p>Sihirbaz yalnızca bir kez, ilk yönetici hesabı oluşturulana kadar görünür. Kurulum tamamlanmadan <code>/Admin</code> adresine gidilirse otomatik olarak buraya yönlendirilirsiniz.</p>
+    <figure><img src="img/04-kurulum.jpg" alt="Kurulum sihirbazı" /><figcaption>Şekil 1 — İlk kurulum sihirbazı (/setup)</figcaption></figure>
+
+    <table>
+        <tr><th style="width:32%">Alan</th><th>Açıklama</th></tr>
+        <tr><td>Ad Soyad, Ünvan, E-posta</td><td>Sitenizin üst bölümünde ve iletişim alanında görünür.</td></tr>
+        <tr><td>Kullanıcı adı, Şifre</td><td>Yönetim paneline giriş bilgileriniz. Şifre en az 8 karakter olmalı, en az bir harf ve bir rakam içermelidir.</td></tr>
+        <tr><td>Örnek içeriği sil</td><td>Açarsanız boş bir CV ile başlarsınız. Kapalı bırakırsanız örnek içerik kalır; siteyi görüp kendi bilgilerinizle değiştirirsiniz.</td></tr>
+        <tr><td>REST API</td><td>Harici bir panel kullanmayacaksanız kapalı bırakın. Sonradan Ayarlar ekranından açılabilir.</td></tr>
+    </table>
+    <div class="note warn"><b>Önemli</b>Kullanıcı adınızı ve şifrenizi güvenli bir yere not edin. Şifre veritabanında geri döndürülemez biçimde (hash) saklanır; unutursanız 10. bölümdeki sıfırlama yöntemini kullanmanız gerekir.</div>
+</section>
+
+<!-- ================= 3. GİRİŞ ================= -->
+<section class="chapter">
+    <h2><span class="num">3</span>Yönetim paneline giriş</h2>
+    <p class="intro">Yönetim paneline <strong>siteadresiniz/Admin</strong> adresinden ulaşırsınız. Sitenin alt kısmındaki küçük kilit simgesi de sizi buraya götürür.</p>
+    <figure><img src="img/15-giris.jpg" alt="Giriş ekranı" /><figcaption>Şekil 2 — Giriş ekranı</figcaption></figure>
+    <ul>
+        <li><strong>Beni hatırla:</strong> İşaretlerseniz 7 gün boyunca tekrar giriş yapmanız gerekmez. Ortak kullanılan bilgisayarlarda işaretlemeyin.</li>
+        <li><strong>Göz simgesi:</strong> Yazdığınız şifreyi görünür yapar.</li>
+        <li><strong>Güvenlik:</strong> Aynı bağlantıdan 5 dakika içinde 10'dan fazla hatalı deneme yapılırsa giriş geçici olarak engellenir; birkaç dakika bekleyip tekrar deneyin.</li>
+        <li><strong>Çıkış:</strong> Sağ üstteki adınıza tıklayın → <em>Çıkış yap</em>.</li>
+    </ul>
+</section>
+
+<!-- ================= 4. DASHBOARD ================= -->
+<section class="chapter">
+    <h2><span class="num">4</span>Dashboard</h2>
+    <p class="intro">Girişten sonra açılan özet ekranı. Sitenizin durumunu tek bakışta gösterir.</p>
+    <figure><img src="img/05-dashboard.jpg" alt="Dashboard" /><figcaption>Şekil 3 — Dashboard (kurulum sonrası karşılama mesajıyla)</figcaption></figure>
+    <table>
+        <tr><th style="width:32%">Bölüm</th><th>Ne gösterir?</th></tr>
+        <tr><td>Karşılama kartı</td><td>Okunmamış mesaj ve gizli içerik sayısı; yeni deneyim / proje / yetenek eklemek için kısayollar.</td></tr>
+        <tr><td>Profil doluluğu (halka)</td><td>Profilinizin ne kadar eksiksiz olduğu. Sağ sütunda eksik alanlar listelenir.</td></tr>
+        <tr><td>Sayaç kartları</td><td>Her içerik türünden kaç kayıt olduğu. Karta tıklayınca ilgili listeye gidilir.</td></tr>
+        <tr><td>Son mesajlar</td><td>İletişim formundan gelen en yeni 5 mesaj. Okunmamışlar renkli çizgiyle işaretlidir.</td></tr>
+        <tr><td>Yetenek dağılımı, teknolojiler</td><td>Kategorilere göre yetenek sayısı ve en çok kullandığınız teknolojiler.</td></tr>
+    </table>
+    <div class="note tip"><b>İpucu</b>Sol menü tüm ekranlarda sabittir. Sağ üstteki ay simgesi paneli koyu temaya alır; seçiminiz tarayıcınızda hatırlanır.</div>
+</section>
+
+<!-- ================= 5. PROFİL ================= -->
+<section class="chapter">
+    <h2><span class="num">5</span>Profil</h2>
+    <p class="intro">Sitenin en üstündeki tanıtım bölümü, "Hakkımda" metni, iletişim bilgileri ve sosyal medya bağlantıları bu ekrandan yönetilir.</p>
+    <figure class="xs"><img src="img/06-profil.jpg" alt="Profil ekranı" /><figcaption>Şekil 4 — Profil ekranı; sağda fotoğraf ve CV yükleme alanları</figcaption></figure>
+
+    <h3>Alanlar</h3>
+    <ul>
+        <li><strong>Kısa Tanıtım (Hero):</strong> Adınızın altında görünen 1–2 cümlelik özet (en fazla 250 karakter).</li>
+        <li><strong>Hakkımda:</strong> Paragrafları <em>boş bir satırla</em> ayırın; sitede ayrı paragraflar olarak gösterilir.</li>
+        <li><strong>Kariyer Başlangıç Tarihi:</strong> Sitedeki "… yıl deneyim" sayısı bu tarihten otomatik hesaplanır.</li>
+        <li><strong>Yeni fırsatlara açığım:</strong> Açıksa sitenin üstünde yeşil "Yeni fırsatlara açığım" rozeti görünür.</li>
+        <li><strong>İletişim ve sosyal medya:</strong> Boş bıraktığınız bağlantılar sitede gösterilmez. Adresler <code>https://</code> ile başlamalıdır.</li>
+    </ul>
+
+    <h3>Profil fotoğrafı ve CV dosyası yükleme</h3>
+    <ol class="steps">
+        <li>Yükleme kutusuna tıklayın veya dosyayı bilgisayarınızdan kutunun üzerine sürükleyip bırakın.</li>
+        <li>Fotoğraf seçtiğinizde önizleme hemen güncellenir; PDF seçtiğinizde dosya adı kutunun altında görünür.</li>
+        <li>Sayfanın altındaki <strong>Profili kaydet</strong> düğmesine basın. Dosyalar ancak kaydettiğinizde yüklenir.</li>
+    </ol>
+    <table>
+        <tr><th style="width:25%">Dosya</th><th style="width:35%">Kabul edilen türler</th><th>En fazla</th></tr>
+        <tr><td>Profil fotoğrafı</td><td>JPG, PNG, WebP, GIF (kare önerilir)</td><td>5 MB</td></tr>
+        <tr><td>CV dosyası</td><td>Yalnızca PDF</td><td>10 MB</td></tr>
+    </table>
+    <p class="fine">Güvenlik için dosya türü içeriğine bakılarak kontrol edilir; adı ".jpg" olup resim olmayan dosyalar ve SVG görseller kabul edilmez.</p>
+    <ul>
+        <li><strong>Kaldırmak için:</strong> "Fotoğrafı kaldır" / "CV dosyasını kaldır" kutusunu işaretleyip kaydedin.</li>
+        <li><strong>CV yüklemezseniz</strong> sitede "CV İndir" yerine "PDF Olarak Kaydet" düğmesi çıkar; ziyaretçi sayfanızı tarayıcıdan PDF'e çevirebilir.</li>
+    </ul>
+</section>
+
+<!-- ================= 6. İÇERİK ================= -->
+<section class="chapter">
+    <h2><span class="num">6</span>CV içeriğini yönetme</h2>
+    <p class="intro">Deneyimler, Eğitim, Yetenekler, Projeler, Sertifikalar ve Diller ekranları aynı mantıkla çalışır: bir liste ekranı ve bir ekleme/düzenleme formu.</p>
+
+    <h3>Liste ekranları</h3>
+    <figure><img src="img/07-deneyimler.jpg" alt="Deneyimler listesi" /><figcaption>Şekil 5 — Deneyimler listesi; gizli kayıt soluk görünür</figcaption></figure>
+    <table>
+        <tr><th style="width:30%">Düğme</th><th>Ne yapar?</th></tr>
+        <tr><td><strong>+ Yeni …</strong> (sağ üst)</td><td>Yeni kayıt formunu açar.</td></tr>
+        <tr><td>Kalem simgesi</td><td>Kaydı düzenler.</td></tr>
+        <tr><td>Göz simgesi</td><td>Kaydı sitede gizler veya tekrar gösterir. Kayıt silinmez.</td></tr>
+        <tr><td>Çöp kutusu simgesi</td><td>Kaydı kalıcı olarak siler. Önce bir onay penceresi çıkar.</td></tr>
+        <tr><td>Ara kutusu</td><td>Listeyi yazdığınız kelimeye göre anında süzer.</td></tr>
+    </table>
+
+    <h3>Deneyim ekleme / düzenleme</h3>
+    <figure><img src="img/08-deneyim-form.jpg" alt="Deneyim formu" /><figcaption>Şekil 6 — Deneyim formu; sağda yayın ayarları</figcaption></figure>
+    <ul>
+        <li><strong>Bitiş tarihi:</strong> Hâlâ çalışıyorsanız boş bırakın. Sitede "Halen" yazar ve süre bugüne kadar hesaplanır.</li>
+        <li><strong>Başarılar:</strong> Her satıra bir madde yazın; sitede onay işaretli liste olarak görünür.</li>
+        <li><strong>Teknolojiler:</strong> Virgülle ayırın (ör. <code>C#, ASP.NET Core, SQL Server</code>). Yazarken etiket önizlemesi oluşur.</li>
+        <li><strong>Yayın Ayarları:</strong> "Sitede göster" anahtarı ve sıra numarası her formun sağ sütunundadır.</li>
+    </ul>
+    <div class="note tip"><b>Doğrulama</b>Zorunlu alanlar boşsa ya da bitiş tarihi başlangıçtan önceyse kayıt yapılmaz; ilgili alanın altında kırmızı bir açıklama çıkar.</div>
+</section>
+
+<section>
+    <h3>Yetenekler</h3>
+    <figure><img src="img/09-yetenek-form.jpg" alt="Yetenek formu" /><figcaption>Şekil 7 — Yetenek formu; seviye kaydırıcısı ve ikon önizlemesi</figcaption></figure>
+    <ul>
+        <li><strong>Kategori:</strong> Sitede yetenekler kategorilere göre ayrı kartlarda gruplanır (Backend, Frontend, Veritabanı, DevOps &amp; Cloud …).</li>
+        <li><strong>Seviye:</strong> Kaydırıcı ile 0–100 arası. Sitede ilerleme çubuğu ve "Başlangıç / Orta / İleri / Uzman" etiketi olarak görünür.</li>
+        <li><strong>İkon Sınıfı:</strong> İsteğe bağlı. <code>devicon.dev</code> veya <code>icons.getbootstrap.com</code> sitelerinden bir sınıf adı yazın (ör. <code>devicon-csharp-plain</code>); sağdaki kutuda önizlenir.</li>
+    </ul>
+
+    <h3>Projeler</h3>
+    <figure><img src="img/10-projeler.jpg" alt="Projeler listesi" /><figcaption>Şekil 8 — Projeler listesi; yıldız simgesi "öne çıkan" durumunu değiştirir</figcaption></figure>
+</section>
+
+<section>
+    <figure><img src="img/11-proje-gorsel.jpg" alt="Proje formu görsel alanı" /><figcaption>Şekil 9 — Proje formu; bağlantılar ve kapak görseli yükleme</figcaption></figure>
+    <ul>
+        <li><strong>Kapak görseli:</strong> JPG, PNG, WebP veya GIF; en fazla 5 MB, yatay (16:9) önerilir. Görsel yüklemezseniz sitede renkli bir kapak ve simge gösterilir.</li>
+        <li><strong>Öne çıkan proje:</strong> Listede yıldıza tıklayarak veya formun sağındaki anahtarla değiştirilir.</li>
+        <li>Bir proje silindiğinde yüklediğiniz kapak görseli de sunucudan otomatik silinir.</li>
+    </ul>
+
+    <h3>Eğitim, Sertifikalar ve Diller</h3>
+    <table>
+        <tr><th style="width:22%">Ekran</th><th>Dikkat edilecekler</th></tr>
+        <tr><td>Eğitim</td><td>Mezuniyet tarihi boşsa sitede "Devam ediyor" yazar. Derece alanında hazır öneriler (Lisans, Yüksek Lisans …) çıkar.</td></tr>
+        <tr><td>Sertifikalar</td><td>Geçerlilik bitişi geçmişse listede ve sitede "Süresi doldu" rozeti görünür. Doğrulama linki girerseniz sitede "Doğrula" bağlantısı çıkar.</td></tr>
+        <tr><td>Diller</td><td>Seviye A1'den Anadil'e kadar seçilir; sitede "Hakkımda" kartında çubuk olarak gösterilir.</td></tr>
+    </table>
+</section>
+
+<!-- ================= 7. MESAJLAR ================= -->
+<section class="chapter">
+    <h2><span class="num">7</span>Mesajlar</h2>
+    <p class="intro">Sitedeki iletişim formundan gönderilen tüm mesajlar burada toplanır. Okunmamış mesaj sayısı sol menüde kırmızı rozetle gösterilir.</p>
+    <figure class="sm"><img src="img/12-mesajlar.jpg" alt="Mesajlar" /><figcaption>Şekil 10 — Mesaj kutusu; okunmamışlar solda renkli çizgiyle işaretli</figcaption></figure>
+    <figure class="sm"><img src="img/13-mesaj-detay.jpg" alt="Mesaj detayı" /><figcaption>Şekil 11 — Mesaj detayı</figcaption></figure>
+    <ul>
+        <li>Bir mesajı açtığınızda otomatik olarak <strong>okundu</strong> işaretlenir.</li>
+        <li><strong>E-posta ile yanıtla</strong>, bilgisayarınızdaki e-posta programını konu satırı hazır şekilde açar.</li>
+        <li><strong>Okunmadı işaretle</strong>, mesajı daha sonra dönmek üzere tekrar okunmamış yapar.</li>
+        <li>Üstteki <strong>Okunmamış</strong> sekmesi yalnızca yeni mesajları listeler.</li>
+    </ul>
+    <div class="note tip"><b>Spam koruması</b>Aynı ziyaretçi dakikada en fazla 5 mesaj gönderebilir; bu sayede form otomatik spam araçlarına karşı korunur.</div>
+</section>
+
+<!-- ================= 8. AYARLAR ================= -->
+<section class="chapter">
+    <h2><span class="num">8</span>Ayarlar</h2>
+    <p class="intro">Sol menüde <strong>Sistem → Ayarlar</strong> veya sağ üstteki adınıza tıklayıp <em>Ayarlar ve şifre</em>.</p>
+    <figure class="sm"><img src="img/14-ayarlar.jpg" alt="Ayarlar" /><figcaption>Şekil 12 — Ayarlar ekranı</figcaption></figure>
+    <table>
+        <tr><th style="width:24%">Bölüm</th><th>Açıklama</th></tr>
+        <tr><td>Hesap</td><td>Panelde görünen adınızı ve hesap e-postanızı değiştirir. Kullanıcı adı ve son giriş zamanı da burada görünür.</td></tr>
+        <tr><td>Şifre Değiştir</td><td>Mevcut şifrenizi ve iki kez yeni şifrenizi girin (en az 8 karakter, harf + rakam).</td></tr>
+        <tr><td>REST API</td><td>Sağ üstteki rozetle API'yi açıp kapatırsınız. Anahtarı göz simgesiyle görür, pano simgesiyle kopyalarsınız. <strong>Yeni anahtar üret</strong> eski anahtarı hemen geçersiz kılar.</td></tr>
+        <tr><td>Tehlikeli Bölge</td><td><strong>İçeriği temizle</strong>; deneyim, eğitim, yetenek, proje, sertifika, dil ve mesajların tamamını siler. Profiliniz ve hesabınız korunur.</td></tr>
+    </table>
+    <div class="note danger"><b>Dikkat</b>"İçeriği temizle" işlemi geri alınamaz. Öncesinde 10. bölümde anlatıldığı gibi yedek almanız önerilir.</div>
+
+    <h3>REST API kimler için?</h3>
+    <p>Yalnızca içeriğinizi başka bir yazılımdan (örneğin kendi yaptığınız bir React paneli veya mobil uygulama) yönetmek istiyorsanız gereklidir. Her istekte <code>X-Api-Key</code> başlığında anahtar gönderilir. Tüm uç noktalar ve denemeler için <strong>siteadresiniz/scalar/v1</strong> adresindeki etkileşimli dokümantasyonu kullanın.</p>
+    <pre>curl -H "X-Api-Key: &lt;anahtarınız&gt;" https://siteadresiniz/api/v1/experiences</pre>
+    <p>Herkese açık CV verisi anahtar gerektirmeden <code>/api/v1/cv</code> adresinden JSON olarak alınabilir.</p>
+</section>
+
+<!-- ================= 9. SİTE ================= -->
+<section class="chapter">
+    <h2><span class="num">9</span>Herkese açık site</h2>
+    <p class="intro">Panelde yaptığınız her değişiklik kaydettiğiniz anda sitede görünür. Gizli kayıtlar ziyaretçilere gösterilmez.</p>
+    <figure><img src="img/02-site-deneyim.jpg" alt="Site deneyim bölümü" /><figcaption>Şekil 13 — Deneyim zaman çizelgesi; güncel iş "Halen çalışıyor" rozetiyle</figcaption></figure>
+    <figure><img src="img/03-site-projeler.jpg" alt="Site projeler bölümü" /><figcaption>Şekil 14 — Projeler; "Tümü / Öne Çıkanlar" filtresiyle</figcaption></figure>
+</section>
+
+<section>
+    <figure><img src="img/03b-site-iletisim.jpg" alt="Site iletişim bölümü" /><figcaption>Şekil 15 — İletişim bölümü; gönderilen mesajlar panele düşer</figcaption></figure>
+    <h3>Ziyaretçi özellikleri</h3>
+    <ul>
+        <li><strong>Açık / koyu tema:</strong> Üst menüdeki ay/güneş simgesi; ilk açılışta ziyaretçinin sistem tercihi kullanılır.</li>
+        <li><strong>Yazıcı simgesi:</strong> Sayfayı sade, baskıya uygun bir CV görünümünde yazdırır veya PDF olarak kaydeder.</li>
+        <li><strong>CV İndir:</strong> Profil ekranından PDF yüklediyseniz görünür.</li>
+        <li><strong>Mobil uyum:</strong> Site telefon ve tablette otomatik olarak tek sütuna geçer; menü katlanır.</li>
+    </ul>
+</section>
+
+<!-- ================= 10. BAKIM ================= -->
+<section class="chapter">
+    <h2><span class="num">10</span>Bakım</h2>
+
+    <h3>Yedekleme</h3>
+    <p>Tam bir yedek <strong>iki parçadan</strong> oluşur:</p>
+    <ol class="steps">
+        <li><strong>Veritabanı</strong> (yazılarınız, ayarlar, hesaplar): SSMS'te paketteki <code>database/04_Backup.sql</code> dosyasını açıp <span class="kbd">F5</span>'e basın. Tarih damgalı bir <code>.bak</code> dosyası SQL Server'ın yedek klasörüne yazılır.</li>
+        <li><strong>Yüklenen dosyalar</strong>: Uygulama klasöründeki <code>App_Data\uploads</code> klasörünü kopyalayın.</li>
+    </ol>
+    <p>Geri yükleme: SSMS → <em>Databases</em> → sağ tık → <em>Restore Database…</em>, ardından <code>uploads</code> klasörünü yerine kopyalayın.</p>
+
+    <h3>Güncelleme</h3>
+    <ol class="steps">
+        <li>Yedek alın.</li>
+        <li>Siteyi durdurun (IIS'te uygulama havuzunu durdurun).</li>
+        <li>Yeni paketteki dosyaları kopyalayın. <strong><code>appsettings.json</code> dosyasının ve <code>App_Data</code> klasörünün üzerine yazmayın.</strong></li>
+        <li>Siteyi başlatın. Yeni sürümün veritabanı değişiklikleri açılışta otomatik uygulanır.</li>
+    </ol>
+
+    <h3>Şifremi unuttum</h3>
+    <p>Sunucuda uygulama klasöründe bir komut istemi (cmd) açıp şunu çalıştırın:</p>
+    <pre>cd C:\inetpub\CvPortal
+CvPortal.Web.exe reset-password admin YeniSifre2026</pre>
+    <p>Kullanıcı adınızı hatırlamıyorsanız yanlış bir ad yazın; komut mevcut kullanıcıları listeler. Komutu çalıştıramıyorsanız SSMS'te <code>database/03_ResetSetup.sql</code> çalıştırın, uygulamayı yeniden başlatın ve <code>/setup</code> ile yeni bir hesap oluşturun. Bu işlem içeriğinizi silmez.</p>
+</section>
+
+<!-- ================= 11. SORUN GİDERME ================= -->
+<section class="chapter">
+    <h2><span class="num">11</span>Sorun giderme</h2>
+    <table>
+        <tr><th style="width:38%">Belirti</th><th>Çözüm</th></tr>
+        <tr><td>Uygulama açılmıyor, "Veritabanına bağlanılamadı" yazıyor</td><td>SQL Server servisinin çalıştığını kontrol edin (<code>services.msc</code> → SQL Server (SQLEXPRESS)). <code>appsettings.json</code> içindeki sunucu adını doğrulayın.</td></tr>
+        <tr><td>IIS: HTTP Error 500.19</td><td>.NET 10 Hosting Bundle kurulu değil.</td></tr>
+        <tr><td>IIS: HTTP Error 500.30</td><td>Uygulama başlarken hata aldı; genellikle veritabanı bağlantısı veya izni. Olay Görüntüleyicisi → Windows Günlükleri → Uygulama kayıtlarına bakın.</td></tr>
+        <tr><td>"Login failed for user 'IIS APPPOOL\…'"</td><td>Uygulama havuzuna veritabanı izni verin (<code>database/01_CreateDatabase.sql</code>, Seçenek A).</td></tr>
+        <tr><td>Her yeniden başlatmada oturum kapanıyor</td><td><code>App_Data</code> klasörüne yazma izni verin; IIS uygulama havuzunda <em>Load User Profile = True</em> olmalı.</td></tr>
+        <tr><td>Fotoğraf / PDF yüklenmiyor</td><td><code>App_Data</code> yazma izni; dosya türü ve boyut sınırlarını kontrol edin (görsel 5 MB, PDF 10 MB).</td></tr>
+        <tr><td>Girişte "Çok fazla istek" sayfası</td><td>Kısa sürede çok fazla hatalı deneme yapıldı. 5 dakika bekleyip tekrar deneyin.</td></tr>
+        <tr><td>Harici panel API'ye erişemiyor (403)</td><td>Ayarlar → REST API kapalı. Açın ve doğru anahtarı kullandığınızdan emin olun.</td></tr>
+        <tr><td>Sitenin çalıştığını hızlıca kontrol etmek</td><td><strong>siteadresiniz/health</strong> adresi <code>Healthy</code> yazmalıdır.</td></tr>
+    </table>
+
+    <div class="note tip" style="margin-top:8mm">
+        <b>Ayarlar dosyası özet (appsettings.json)</b>
+        <code>ConnectionStrings:DefaultConnection</code> veritabanı bağlantısı ·
+        <code>Database:AutoMigrate</code> açılışta tabloları oluşturur/günceller ·
+        <code>Database:SeedDemoData</code> boş veritabanına örnek içerik ekler ·
+        <code>Database:Provider</code> "InMemory" yapılırsa veritabanısız demo modu ·
+        <code>Api:AllowedOrigins</code> API'yi tarayıcıdan çağıracak panel adresleri.
+        Şifreler ve API anahtarı bu dosyada değil, veritabanında saklanır.
+    </div>
+</section>
+
+</body>
+</html>

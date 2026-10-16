@@ -118,8 +118,8 @@ ve anahtar oradan alınır. Tarayıcıdan çağıracak paneller için `Api:Allow
 dotnet publish src/CvPortal.Web -p:PublishProfile=SatisPaketi
 ```
 
-Çıktı: `artifacts/CvPortal` (~32 MB, Windows x64, .NET 10 runtime gerektirir). Bu klasörü `database/` scriptleri ve
-`KURULUM.md` ile birlikte zip'leyip teslim edin. Rider / Visual Studio'da: *CvPortal.Web → Publish → SatisPaketi*.
+Çıktı: `artifacts/CvPortal` (~32 MB, Windows x64, .NET 10 runtime gerektirir). Bu klasörü `database/` scriptleri,
+`KURULUM.md` ve `docs/CvPortal-Kullanim-Kilavuzu.pdf` ile birlikte zip'leyip teslim edin. Rider / Visual Studio'da: *CvPortal.Web → Publish → SatisPaketi*.
 
 ## Testler
 
