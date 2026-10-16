@@ -43,7 +43,7 @@ Sihirbaz yalnızca ilk yönetici hesabı oluşturulana kadar görünür.
 | Örnek içeriği sil | Açarsanız boş bir CV ile başlarsınız. Kapalı bırakırsanız örnek içeriği kendi bilgilerinizle değiştirirsiniz |
 | REST API | Harici bir panel / mobil uygulama kullanmayacaksanız kapalı bırakın |
 
-Kurulumdan sonra admin paneli: **/Admin**
+Kurulumdan sonra admin paneli: **/Admin**. Profil fotoğrafınızı ve CV PDF'inizi **Profil** ekranından, proje görsellerini **Projeler** ekranından doğrudan bilgisayarınızdan yükleyebilirsiniz (sürükle-bırak desteklenir).
 
 ---
 
@@ -56,7 +56,7 @@ Kurulumdan sonra admin paneli: **/Admin**
    - .NET CLR version: **No Managed Code**
    - Gelişmiş ayarlar → *Load User Profile*: **True**
 4. *Sites* → *Add Website*: fiziksel yol `C:\inetpub\CvPortal`, uygulama havuzu `CvPortal`, alan adınız ve bağlantı noktası.
-5. Klasör izni: `C:\inetpub\CvPortal\App_Data` klasörünü oluşturun ve `IIS AppPool\CvPortal` kullanıcısına **Değiştirme (Modify)** izni verin. Oturum anahtarları burada saklanır.
+5. Klasör izni: `C:\inetpub\CvPortal\App_Data` klasörünü oluşturun ve `IIS AppPool\CvPortal` kullanıcısına **Değiştirme (Modify)** izni verin. Oturum anahtarları ve admin panelden yüklenen fotoğraf / CV dosyaları burada saklanır.
 6. Veritabanı izni — iki seçenekten biri:
    - **Windows kimliği:** SSMS'te `database/01_CreateDatabase.sql` dosyasındaki *SEÇENEK A* satırlarını açıp çalıştırın. Bağlantı cümlesi `Trusted_Connection=True` kalır.
    - **SQL kullanıcı adı/şifre** (hosting firmaları genelde bunu verir):
@@ -102,6 +102,11 @@ Komutu çalıştıramıyorsanız SSMS'te `database/03_ResetSetup.sql` çalışt�
 
 ## 7. Yedekleme
 
+Tam bir yedek **iki parçadan** oluşur:
+
+1. **Veritabanı** (yazılar, ayarlar, hesaplar)
+2. **`App_Data\uploads` klasörü** (yüklediğiniz profil fotoğrafı, CV PDF'i ve proje görselleri) — klasörü kopyalamanız yeterlidir.
+
 - **SSMS:** `database/04_Backup.sql` → F5. Dosya SQL Server'ın *Backup* klasörüne yazılır.
 - **Geri yükleme:** SSMS → *Databases* → sağ tık → *Restore Database…*
 - Düzenli yedek için Windows Görev Zamanlayıcı + `sqlcmd -S .\SQLEXPRESS -i 04_Backup.sql` kullanılabilir.
@@ -140,4 +145,5 @@ REST API anahtarı, yönetici şifresi ve hesap bilgileri dosyada **değil**, ve
 | IIS: **HTTP Error 500.30** | Uygulama başlarken hata aldı — genellikle veritabanı bağlantısı / izni. *Olay Görüntüleyicisi → Windows Günlükleri → Uygulama* kayıtlarına bakın |
 | *Login failed for user 'IIS APPPOOL\…'* | 4. bölüm, 6. adım: uygulama havuzuna veritabanı izni verin |
 | Her yeniden başlatmada oturum kapanıyor | `App_Data` klasörüne yazma izni ve uygulama havuzunda *Load User Profile = True* |
+| Fotoğraf / PDF yüklenirken hata | `App_Data` klasörüne yazma izni. Görseller JPG/PNG/WebP/GIF ve en fazla 5 MB, CV yalnızca PDF ve en fazla 10 MB olmalı |
 | Sağlık kontrolü | `https://siteniz/health` → `Healthy` yazmalı |

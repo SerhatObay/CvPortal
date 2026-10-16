@@ -48,3 +48,5 @@ dotnet publish src/CvPortal.Web -p:PublishProfile=SatisPaketi   # artifacts/CvPo
 - Tasarım token'ları `wwwroot/css/site.css` (public) ve `admin.css` (admin) içindeki CSS değişkenleridir; açık/koyu tema `data-bs-theme` ile.
 - Admin POST formları `AdminControllerBase` üzerindeki `[AutoValidateAntiforgeryToken]` ile korunur; silme formlarına `data-confirm` ekle.
 - Müşteriye dönük değişikliklerde `KURULUM.md`'yi de güncelle.
+- Dosya yüklemeleri `Web/Uploads` (`MediaUploader` doğrulama, `MediaChangeSet` commit/rollback) üzerinden yapılır;
+  dosyalar `App_Data/uploads`'a yazılır ve `/media` altında sunulur. wwwroot'a çalışma zamanında dosya yazma.

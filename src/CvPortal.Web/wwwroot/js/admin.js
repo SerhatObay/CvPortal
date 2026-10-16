@@ -112,6 +112,27 @@
         });
     });
 
+    // ---- Dosya yükleme: önizleme, dosya adı, sürükle-bırak vurgusu ----
+    document.querySelectorAll('.upload-drop input[type=file]').forEach(input => {
+        const zone = input.closest('.upload-drop');
+        ['dragenter', 'dragover'].forEach(e => input.addEventListener(e, () => zone.classList.add('drag-over')));
+        ['dragleave', 'drop'].forEach(e => input.addEventListener(e, () => zone.classList.remove('drag-over')));
+
+        input.addEventListener('change', () => {
+            const file = input.files?.[0];
+            zone.classList.toggle('has-file', !!file);
+
+            const nameTarget = input.dataset.fileName && document.querySelector(input.dataset.fileName);
+            if (nameTarget) nameTarget.textContent = file ? `Seçildi: ${file.name}` : '';
+
+            const preview = input.dataset.filePreview && document.querySelector(input.dataset.filePreview);
+            if (preview && file && file.type.startsWith('image/')) {
+                preview.src = URL.createObjectURL(file);
+                preview.classList.remove('d-none');
+            }
+        });
+    });
+
     // ---- Gizli değeri göster / kopyala (API anahtarı) ----
     document.querySelectorAll('[data-reveal]').forEach(btn => {
         const input = document.querySelector(btn.dataset.reveal);

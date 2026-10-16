@@ -10,6 +10,8 @@ using CvPortal.Web.OpenApi;
 using CvPortal.Web.Options;
 using CvPortal.Web.Security;
 using CvPortal.Web.Setup;
+using CvPortal.Web.Uploads;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
@@ -26,6 +28,14 @@ databaseOptions.ConnectionString = builder.Configuration.GetConnectionString("De
 builder.Services
     .AddApplication()                     // İş servisleri
     .AddInfrastructure(databaseOptions);  // SQL Server (EF Core) veya InMemory
+
+// ---------- Yüklenen dosyalar ----------
+// Fotoğraf / CV / proje görselleri App_Data/uploads altında saklanır ve /media adresinden yayınlanır.
+// App_Data, güncellemelerde üzerine yazılmayan ve yazma izni verilen tek klasördür.
+var uploadsRoot = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "uploads");
+builder.Services.AddLocalFileStorage(uploadsRoot, "/media");
+builder.Services.AddScoped<MediaUploader>();
+builder.Services.AddScoped<MediaChangeSet>();
 
 // ---------- Ayarlar ----------
 builder.Services.Configure<ApiOptions>(builder.Configuration.GetSection(ApiOptions.SectionName));
@@ -133,6 +143,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+// Yüklenen dosyalar: /media/{klasör}/{dosya}. Tarayıcının türü tahmin etmesi engellenir (nosniff).
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsRoot),
+    RequestPath = "/media",
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.XContentTypeOptions = "nosniff";
+        ctx.Context.Response.Headers.CacheControl = "public,max-age=604800";
+    }
+});
+
 app.MapHealthChecks("/health");
 
 // API dokümantasyonu: /openapi/v1.json ve /scalar/v1

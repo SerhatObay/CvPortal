@@ -4,7 +4,7 @@
     ViewData["Subtitle"] = "Sitenin üst bölümünde ve iletişim alanında görünen bilgiler";
 }
 
-<form asp-action="Index" method="post" novalidate>
+<form asp-action="Index" method="post" enctype="multipart/form-data" novalidate>
     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
     <div class="row g-4">
@@ -100,18 +100,58 @@
                     <h6 class="card-section-title text-start">Profil Fotoğrafı</h6>
                     <img id="avatarPreview" src="@(string.IsNullOrWhiteSpace(Model.AvatarUrl) ? "/images/avatar.svg" : Model.AvatarUrl)" alt="Önizleme" class="avatar-preview" />
                     <div class="text-start mt-3">
-                        <label asp-for="AvatarUrl" class="form-label"></label>
-                        <input asp-for="AvatarUrl" class="form-control" data-preview="#avatarPreview" placeholder="/images/avatar.svg veya https://..." />
-                        <div class="form-text">wwwroot/images altına dosya koyup yolunu yazabilirsiniz.</div>
+                        <label for="avatarFile" class="upload-drop">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <span><strong>Fotoğraf seçin</strong> veya buraya sürükleyin</span>
+                            <small>JPG, PNG, WebP · en fazla 5 MB · kare fotoğraf önerilir</small>
+                            <input type="file" id="avatarFile" name="avatarFile" accept="@MediaUploader.ImageAccept" data-file-preview="#avatarPreview" />
+                        </label>
+                        <span asp-validation-for="AvatarUrl" class="text-danger small"></span>
+                        @if (!string.IsNullOrWhiteSpace(Model.AvatarUrl) && Model.AvatarUrl != "/images/avatar.svg")
+                        {
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="removeAvatar" name="removeAvatar" value="true" />
+                                <label class="form-check-label small" for="removeAvatar">Fotoğrafı kaldır (varsayılan görsel kullanılır)</label>
+                            </div>
+                        }
+                        <details class="mt-2 small">
+                            <summary class="text-body-secondary">Gelişmiş: adres ile kullan</summary>
+                            <input asp-for="AvatarUrl" class="form-control form-control-sm mt-2" data-preview="#avatarPreview" placeholder="https://..." />
+                        </details>
                     </div>
                 </div>
             </div>
             <div class="card admin-card mb-4">
                 <div class="card-body">
-                    <h6 class="card-section-title">CV Dosyası</h6>
-                    <label asp-for="CvFileUrl" class="form-label"></label>
-                    <input asp-for="CvFileUrl" class="form-control" placeholder="/files/cv.pdf" />
-                    <div class="form-text">Boş bırakılırsa sitede "PDF olarak kaydet" (yazdır) butonu gösterilir.</div>
+                    <h6 class="card-section-title">CV Dosyası (PDF)</h6>
+                    @if (!string.IsNullOrWhiteSpace(Model.CvFileUrl))
+                    {
+                        <a href="@Model.CvFileUrl" target="_blank" class="file-chip mb-3">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            <span>Mevcut CV'yi görüntüle</span>
+                            <i class="bi bi-box-arrow-up-right ms-auto small"></i>
+                        </a>
+                    }
+                    <label for="cvFile" class="upload-drop">
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+                        <span><strong>PDF seçin</strong> veya buraya sürükleyin</span>
+                        <small>En fazla 10 MB</small>
+                        <input type="file" id="cvFile" name="cvFile" accept="@MediaUploader.PdfAccept" data-file-name="#cvFileName" />
+                    </label>
+                    <div id="cvFileName" class="small fw-semibold mt-1"></div>
+                    <span asp-validation-for="CvFileUrl" class="text-danger small"></span>
+                    @if (!string.IsNullOrWhiteSpace(Model.CvFileUrl))
+                    {
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="removeCv" name="removeCv" value="true" />
+                            <label class="form-check-label small" for="removeCv">CV dosyasını kaldır</label>
+                        </div>
+                    }
+                    <div class="form-text">CV yüklenmezse sitede "PDF olarak kaydet" (yazdır) butonu gösterilir.</div>
+                    <details class="mt-2 small">
+                        <summary class="text-body-secondary">Gelişmiş: adres ile kullan</summary>
+                        <input asp-for="CvFileUrl" class="form-control form-control-sm mt-2" placeholder="https://..." />
+                    </details>
                 </div>
             </div>
             @if (Model.UpdatedAt is { } updated)

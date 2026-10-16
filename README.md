@@ -88,6 +88,10 @@ Dashboard · Profil · Deneyimler · Eğitim · Yetenekler · Projeler · Sertif
 
 - Ekle / düzenle / sil, sitede gizle/göster, sıralama; sunucu + istemci tarafı Türkçe doğrulama
 - Ayarlar: hesap bilgileri, şifre değiştirme, REST API aç/kapat, API anahtarı yenileme, tüm içeriği temizleme
+- Dosya yükleme: profil fotoğrafı, CV PDF'i ve proje görselleri. Dosyalar `App_Data/uploads` altında saklanır ve
+  `/media/...` adresinden yayınlanır (`IFileStorage` → `LocalFileStorage`). Tür, dosya imzasıyla doğrulanır
+  (JPG/PNG/WebP/GIF ≤ 5 MB, PDF ≤ 10 MB; SVG kabul edilmez). `MediaChangeSet` eski dosyayı yalnızca kayıt
+  başarılı olunca siler, hata olursa yeni dosyayı geri alır.
 - Güvenlik: PBKDF2 şifre hash'i, giriş denemesi sınırı (IP başına 5 dk'da 10), antiforgery, kalıcı Data Protection anahtarları
 
 ## REST API

@@ -2,6 +2,7 @@ using CvPortal.Application.Abstractions;
 using CvPortal.Domain.Entities;
 using CvPortal.Infrastructure.MockData;
 using CvPortal.Infrastructure.Persistence;
+using CvPortal.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +30,18 @@ public static class DependencyInjection
             sql => sql.EnableRetryOnFailure(maxRetryCount: 3)));
 
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+        return services;
+    }
+
+    /// <summary>
+    /// Yüklenen dosyalar için disk depolamasını kaydeder. Dosyalar <paramref name="rootPath"/> altında saklanır
+    /// ve <paramref name="requestPath"/> adresinden yayınlanır (Web katmanı static file olarak sunar).
+    /// </summary>
+    public static IServiceCollection AddLocalFileStorage(this IServiceCollection services, string rootPath, string requestPath = "/media")
+    {
+        var storage = new LocalFileStorage(rootPath, requestPath);
+        services.AddSingleton(storage);
+        services.AddSingleton<IFileStorage>(storage);
         return services;
     }
 

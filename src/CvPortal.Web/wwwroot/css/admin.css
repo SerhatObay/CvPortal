@@ -296,6 +296,25 @@ body { font-family: var(--font-sans); background: var(--bg); -webkit-font-smooth
 .login-card { width: 100%; max-width: 420px; }
 .login-card .input-group-text { background: var(--card); border-color: var(--border); color: var(--muted); }
 
+/* ---------- Dosya yükleme ---------- */
+.upload-drop {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: .2rem;
+    padding: 1.1rem 1rem; border: 2px dashed var(--border); border-radius: 12px;
+    background: var(--hover); text-align: center; cursor: pointer;
+    transition: border-color .2s ease, background-color .2s ease;
+}
+.upload-drop:hover, .upload-drop.drag-over { border-color: var(--accent); background: rgba(99, 102, 241, .06); }
+.upload-drop > i { font-size: 1.6rem; color: var(--accent); }
+.upload-drop > span { font-size: .88rem; }
+.upload-drop > small { color: var(--muted); font-size: .75rem; }
+/* Dosya alanı görünmez ama tüm kutuyu kaplar: tıklama ve sürükle-bırak doğrudan ona gider. */
+.upload-drop input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-drop.has-file { border-style: solid; border-color: #10b981; }
+.file-chip { display: flex; align-items: center; gap: .6rem; padding: .6rem .8rem; border-radius: 10px; border: 1px solid var(--border); text-decoration: none; color: var(--bs-body-color); font-size: .88rem; font-weight: 600; }
+.file-chip > i:first-child { color: #ef4444; font-size: 1.2rem; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+
 /* ---------- Kurulum sihirbazı ---------- */
 .login-card.setup-card { max-width: 560px; }
 .setup-steps { padding-left: 0; }

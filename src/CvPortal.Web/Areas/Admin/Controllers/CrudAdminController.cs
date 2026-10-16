@@ -7,6 +7,7 @@ namespace CvPortal.Web.Areas.Admin.Controllers;
 /// <summary>
 /// Admin panelindeki liste / ekle / düzenle / sil / gizle-göster ekranları için ortak davranış.
 /// Her içerik tipi için Index.cshtml ve Form.cshtml görünümleri kullanılır.
+/// Dosya yükleme gibi ek işler için BeforeSaveAsync / AfterSaveAsync / AfterDeleteAsync ezilebilir.
 /// </summary>
 public abstract class CrudAdminController<TDto>(ICrudService<TDto> service) : AdminControllerBase
     where TDto : class, IHasId, new()
@@ -15,6 +16,15 @@ public abstract class CrudAdminController<TDto>(ICrudService<TDto> service) : Ad
     protected abstract string EntityName { get; }
 
     protected virtual TDto CreateNew() => new();
+
+    /// <summary>Kaydetmeden hemen önce çağrılır. false dönerse form (ModelState hatalarıyla) tekrar gösterilir.</summary>
+    protected virtual Task<bool> BeforeSaveAsync(TDto dto, TDto? existing, CancellationToken ct) => Task.FromResult(true);
+
+    /// <summary>Kayıt denemesinden sonra çağrılır (başarılı / başarısız).</summary>
+    protected virtual Task AfterSaveAsync(bool succeeded, CancellationToken ct) => Task.CompletedTask;
+
+    /// <summary>Kayıt silindikten sonra çağrılır (ör. ilişkili dosyaları temizlemek için).</summary>
+    protected virtual Task AfterDeleteAsync(TDto deleted, CancellationToken ct) => Task.CompletedTask;
 
     public async Task<IActionResult> Index(CancellationToken ct)
         => View(await service.GetAllAsync(ct: ct));
@@ -25,9 +35,23 @@ public abstract class CrudAdminController<TDto>(ICrudService<TDto> service) : Ad
     [HttpPost]
     public async Task<IActionResult> Create(TDto dto, CancellationToken ct)
     {
-        if (!ModelState.IsValid) return View("Form", dto);
+        if (!ModelState.IsValid || !await BeforeSaveAsync(dto, null, ct))
+        {
+            await AfterSaveAsync(false, ct);
+            return View("Form", dto);
+        }
 
-        await service.CreateAsync(dto, ct);
+        try
+        {
+            await service.CreateAsync(dto, ct);
+        }
+        catch
+        {
+            await AfterSaveAsync(false, ct);
+            throw;
+        }
+
+        await AfterSaveAsync(true, ct);
         Success($"{EntityName} başarıyla eklendi.");
         return RedirectToAction(nameof(Index));
     }
@@ -42,7 +66,28 @@ public abstract class CrudAdminController<TDto>(ICrudService<TDto> service) : Ad
         dto.Id = id;
         if (!ModelState.IsValid) return View("Form", dto);
 
-        if (!await service.UpdateAsync(id, dto, ct)) return NotFound();
+        var existing = await service.GetByIdAsync(id, ct);
+        if (existing is null) return NotFound();
+
+        if (!await BeforeSaveAsync(dto, existing, ct))
+        {
+            await AfterSaveAsync(false, ct);
+            return View("Form", dto);
+        }
+
+        bool updated;
+        try
+        {
+            updated = await service.UpdateAsync(id, dto, ct);
+        }
+        catch
+        {
+            await AfterSaveAsync(false, ct);
+            throw;
+        }
+
+        await AfterSaveAsync(updated, ct);
+        if (!updated) return NotFound();
 
         Success($"{EntityName} güncellendi.");
         return RedirectToAction(nameof(Index));
@@ -51,8 +96,16 @@ public abstract class CrudAdminController<TDto>(ICrudService<TDto> service) : Ad
     [HttpPost]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        if (await service.DeleteAsync(id, ct)) Success($"{EntityName} silindi.");
-        else Error($"{EntityName} bulunamadı.");
+        var existing = await service.GetByIdAsync(id, ct);
+        if (existing is not null && await service.DeleteAsync(id, ct))
+        {
+            await AfterDeleteAsync(existing, ct);
+            Success($"{EntityName} silindi.");
+        }
+        else
+        {
+            Error($"{EntityName} bulunamadı.");
+        }
 
         return RedirectToAction(nameof(Index));
     }
