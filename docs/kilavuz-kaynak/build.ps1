@@ -1,4 +1,4 @@
-# CvPortal kullanım kılavuzunu kilavuz.html'den PDF'e çevirir (Microsoft Edge, görünmez modda).
+﻿# CvPortal kullanım kılavuzunu kilavuz.html'den PDF'e çevirir (Microsoft Edge, görünmez modda).
 # Kullanım (proje kökünden):  powershell -ExecutionPolicy Bypass -File docs\kilavuz-kaynak\build.ps1
 # Ekran görüntülerini güncellemek için img\ klasöründeki aynı adlı dosyaları değiştirmeniz yeterlidir.
 param([string]$Output = (Join-Path $PSScriptRoot '..\CvPortal-Kullanim-Kilavuzu.pdf'))

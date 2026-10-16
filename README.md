@@ -114,12 +114,24 @@ ve anahtar oradan alınır. Tarayıcıdan çağıracak paneller için `Api:Allow
 
 ## Satış paketi oluşturma
 
+Testleri çalıştırır, iki paketi de üretir, zip'ler ve SHA-256 özetlerini yazar:
+
 ```bash
-dotnet publish src/CvPortal.Web -p:PublishProfile=SatisPaketi
+powershell -ExecutionPolicy Bypass -File scripts\paketle.ps1
 ```
 
-Çıktı: `artifacts/CvPortal` (~32 MB, Windows x64, .NET 10 runtime gerektirir). Bu klasörü `database/` scriptleri,
-`KURULUM.md` ve `docs/CvPortal-Kullanim-Kilavuzu.pdf` ile birlikte zip'leyip teslim edin. Rider / Visual Studio'da: *CvPortal.Web → Publish → SatisPaketi*.
+| Çıktı (`artifacts/`) | İçerik |
+|---|---|
+| `CvPortal-<sürüm>.zip` | **Standart** (~13 MB) — .NET 10 runtime gerektirir; hosting firmaları için |
+| `CvPortal-<sürüm>-tam.zip` | **Tam** (~59 MB) — .NET dahil, ayrıca kurulum gerekmez; çift tıkla çalıştır |
+| `SHA256SUMS.txt` | Zip dosyalarının SHA-256 özetleri |
+
+Her zip: `uygulama/` (yayın çıktısı, `.pdb` ve `App_Data` hariç), `database/` scriptleri, `KURULUM.md`,
+kullanım kılavuzu PDF'i ve pakete göre uyarlanan `BENIOKU.txt` (`scripts/paket/BENIOKU.txt` şablonundan).
+
+**Yeni sürüm çıkarırken:** `src/CvPortal.Web/CvPortal.Web.csproj` → `<Version>` değerini artırın, commit'leyin,
+`scripts\paketle.ps1` çalıştırın ve commit'i `git tag v<sürüm>` ile etiketleyin.
+Yayın profilleri (`SatisPaketi`, `SatisPaketiTam`) Rider / Visual Studio'nun *Publish* menüsünden de kullanılabilir.
 
 ## Testler
 

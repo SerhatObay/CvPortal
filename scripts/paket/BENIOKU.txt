@@ -1,0 +1,60 @@
+=====================================================================
+  CvPortal {{SURUM}} — Kişisel CV / Portfolyo Sitesi ve Yönetim Paneli
+  Paket: {{PAKET_ADI}}
+=====================================================================
+
+PAKET İÇERİĞİ
+-------------
+  uygulama\                         Çalışan uygulama (CvPortal.Web.exe)
+  database\                         SQL Server scriptleri (isteğe bağlı, SSMS için)
+  CvPortal-Kullanim-Kilavuzu.pdf    Ekran görüntülü kullanım kılavuzu
+  KURULUM.md                        Ayrıntılı kurulum rehberi (sunucu / IIS dahil)
+  BENIOKU.txt                       Bu dosya
+
+
+GEREKSİNİMLER
+-------------
+  - Windows 10/11 veya Windows Server 2016+ (64 bit)
+{{GEREKSINIM}}
+  - SQL Server 2016 veya üzeri (ücretsiz SQL Server Express yeterlidir)
+
+
+5 DAKİKADA KURULUM (kendi bilgisayarınızda)
+-------------------------------------------
+  1. Bu klasörü örneğin C:\CvPortal konumuna çıkarın.
+
+  2. uygulama\appsettings.json dosyasını Not Defteri ile açın.
+     Bilgisayarınızda SQL Server Express kuruluysa hiçbir şeyi
+     değiştirmenize gerek yoktur. Farklı bir SQL Server kullanıyorsanız
+     "DefaultConnection" satırını düzenleyin.
+
+  3. uygulama\CvPortal.Web.exe dosyasına çift tıklayın.
+     Veritabanı ve tablolar otomatik oluşturulur.
+
+  4. Tarayıcıda şu adresi açın:   http://localhost:5000/setup
+     Adınızı ve yönetici hesabınızı girip kurulumu tamamlayın.
+
+  5. Yönetim paneli:              http://localhost:5000/Admin
+
+
+SUNUCUYA KURULUM (IIS)
+----------------------
+  KURULUM.md dosyasının 4. bölümüne bakın.
+
+
+ŞİFREMİ UNUTTUM
+---------------
+  uygulama klasöründe bir komut istemi açıp:
+    CvPortal.Web.exe reset-password <kullanıcı-adı> <yeni-şifre>
+
+
+YEDEKLEME
+---------
+  1. Veritabanı: database\04_Backup.sql dosyasını SSMS'te çalıştırın.
+  2. Yüklenen dosyalar: uygulama\App_Data\uploads klasörünü kopyalayın.
+
+
+GÜNCELLEME
+----------
+  Yeni sürümü kopyalarken appsettings.json dosyasının ve App_Data
+  klasörünün üzerine YAZMAYIN.

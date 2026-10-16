@@ -21,6 +21,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Yayın paketine yalnızca Türkçe (ve varsayılan İngilizce) kaynak dosyaları alınır; boyutu ciddi ölçüde küçültür. -->
     <SatelliteResourceLanguages>tr</SatelliteResourceLanguages>
+
+    <!-- Ürün bilgisi: CvPortal.Web.exe → Özellikler → Ayrıntılar'da görünür. Yeni sürümde Version'ı artırın. -->
+    <Version>1.0.0</Version>
+    <Product>CvPortal</Product>
+    <Description>Kişisel CV / portfolyo sitesi ve yönetim paneli</Description>
   </PropertyGroup>
 
   <ItemGroup>
