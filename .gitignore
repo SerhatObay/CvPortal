@@ -487,3 +487,5 @@ artifacts/
 .claude/launch.json
 .claude/settings.local.json
 docs/kilavuz-kaynak/.edge-profile/
+# CvPortal yayın profilleri gizli bilgi içermez; satış paketi için depoda tutulur.
+!src/CvPortal.Web/Properties/PublishProfiles/SatisPaketi*.pubxml
